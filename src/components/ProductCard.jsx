@@ -1,80 +1,119 @@
 import { useState } from "react";
+import productImage from "../assets/productcard.png";
 
-export default function ProductCard() {
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+export default function ProductCard({
+  name = "Dewdrop Renewal Serum",
+  category = "FACE SERUM",
+  description = "Hydrate, nourish & reveal your natural glow.",
+  price = 68,
+  rating = 4.9,
+  reviews = 218,
+  image = productImage,
+  badge = "BESTSELLER",
+  sizes,
+}) {
+  const productSizes = sizes || [
+    { label: "30 ml", price: Math.round(price * 0.7) },
+    { label: "50 ml", price },
+  ];
+
+  const [favorite, setFavorite] = useState(false);
+  const [selectedSize, setSelectedSize] = useState(
+    productSizes.length - 1
+  );
+  const [added, setAdded] = useState(false);
 
   return (
-    <div className="w-full max-w-[340px] overflow-hidden rounded-[30px] bg-white font-sans shadow-lg ">
+    <article className="group w-full max-w-[220px] overflow-hidden rounded-xl border border-[#FDF5FA] bg-white transition hover:-translate-y-1 hover:shadow-md">
       {/* Product Image */}
-      <div className="relative h-[230px] w-full overflow-hidden rounded-t-[10px]">
+      <div className="relative m-1.5 overflow-hidden rounded-lg bg-[#FDF5FA]">
         <img
-          src="src/assets/productcard.png" 
-          alt="Dewdrop Renewal Serum"
-          className="h-full w-full object-cover"
+          src={image}
+          alt={name}
+          className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
 
-        <span className="absolute left-7 top-7 rounded-full bg-white px-2 py-1  text-[#89565a]">
-          Bestseller
-        </span>
+        {badge && (
+          <span className="absolute left-2 top-2 rounded-full bg-white px-2 py-1 text-[8px] font-semibold tracking-wide text-[var(--color-pink-text)]">
+            {badge}
+          </span>
+        )}
 
         <button
-          onClick={() => setIsFavorite(!isFavorite)}
+          type="button"
+          onClick={() => setFavorite(!favorite)}
           aria-label="Toggle favorite"
-          className="absolute right-7 top-7 flex h-8 w-8 items-center justify-center rounded-full bg-white transition hover:scale-100"
+          aria-pressed={favorite}
+          className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-white text-base text-[var(--color-pink-text)]"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill={isFavorite ? "#e84f7d" : "none"}
-            stroke={isFavorite ? "#e84f7d" : "#333333"}
-            strokeWidth="1.7"
-            className="h-4 w-4"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"
-            />
-          </svg>
+          {favorite ? "♥" : "♡"}
         </button>
+
+        <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-white/95 px-2 py-1 text-[9px]">
+          <span className="text-amber-500">★</span>
+          <span className="font-medium">{rating}</span>
+          <span className="text-gray-400">({reviews})</span>
+        </div>
       </div>
 
-      {/* Product Details */}
-      <div className="px-7 pb-5 pt-5">
-        <p className=" text-sml text-[#817874] ">Serum</p>
+      {/* Product Information */}
+      <div className="px-2.5 pb-3 pt-1">
+        <p className="text-[8px] font-semibold tracking-[1px] text-[var(--color-pink-text)]">
+          {category}
+        </p>
 
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-sml mt-2 font-semibold leading-tight tracking-tight text-[#292524]">
-            Dewdrop Renewal Serum
-          </h2>
+        <h3 className="mt-1.5 line-clamp-2 text-sm font-medium leading-snug text-[#4A001F]">
+          {name}
+        </h3>
 
-          <span className="shrink-0 text-sml mt-2 font-semibold text-[#292524]">
-            $68
-          </span>
+        <p className="mt-1 line-clamp-2 min-h-[30px] text-[10px] leading-[15px] text-gray-500">
+          {description}
+        </p>
+
+        {/* Size Selection */}
+        <div className="mt-2.5 flex gap-1.5">
+          {productSizes.map((item, index) => (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => setSelectedSize(index)}
+              aria-pressed={selectedSize === index}
+              className={`rounded-full border px-2.5 py-1 text-[9px] transition ${
+                selectedSize === index
+                  ? "border-[var(--color-button)] bg-[var(--color-button)] text-white"
+                  : "border-[#F5DCE8] text-[#4A001F] hover:border-[var(--color-button)]"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
 
-        {/* Product Rating */}
-        <div className="mt-2 flex items-center gap-3">
-          <div className="flex text-sml leading-none text-[#ff9f24]">
-            {"★★★★★".split("").map((star, index) => (
-              <span key={index}>{star}</span>
-            ))}
+        {/* Price and Button */}
+        <div className="mt-3 flex items-center justify-between gap-1.5 border-t border-[#FDF5FA] pt-2.5">
+          <div>
+            <p className="text-[8px] text-gray-400">PRICE</p>
+            <p className="text-sm font-semibold text-[#4A001F]">
+              ${Number(productSizes[selectedSize].price).toFixed(2)}
+            </p>
           </div>
 
-          <span className="text-lg text-[#817874]">4.9</span>
+          <button
+            type="button"
+            onClick={() => {
+              setAdded(true);
+              setTimeout(() => setAdded(false), 1500);
+            }}
+            className={`rounded-full px-3 py-2 text-[9px] font-medium text-white transition ${
+              added
+                ? "bg-green-700"
+                : "bg-[var(--color-button)] hover:opacity-80"
+            }`}
+          >
+            {added ? "✓ Added" : "+ Add"}
+          </button>
         </div>
-
-        {/* Add to Cart */}
-        <button
-          onClick={() => setCartCount(cartCount + 1)}
-          className="mt-4 w-full rounded-2xl bg-[#e94f7d] pag-3 py-2 text-sml font-medium text-white shadow-md transition duration-200 hover:bg-[#d93d6c] active:scale-[0.98]"
-        >
-          {cartCount > 0
-            ? `Added to cart (${cartCount})`
-            : "Add to cart"}
-        </button>
       </div>
-    </div>
+    </article>
   );
 }
