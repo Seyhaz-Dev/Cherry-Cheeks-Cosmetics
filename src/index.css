@@ -1,14 +1,70 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
   font-family: 'Outfit', sans-serif;
-  background-color: #ffffff;
-  color: #111827;
+  background-color: #FFFFFF;
+  color: #4A001F;
 }
 
-* {
-  box-sizing: border-box;
+/* Text Styles */
+h1 {
+  font-size: 56px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 40px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 400;
+}
+
+h4 {
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 600;
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* MINJUU Colors */
+:root {
+  --color-header-footer: #FDF5FA;
+  --color-background: #F8C7E8;
+  --color-button: #E7567E;
+  --color-pink-text: #E7567E;
+  --color-black: #000000;
+  --color-white-text: #FFFFFF;
+}
+
+/* Common Styles */
+button {
+  font-family: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
 }
