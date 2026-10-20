@@ -60,16 +60,20 @@ function Header() {
             Contact
           </Link>
 
-          
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex items-center ">
 
-            <Link to="/search" aria-label="Search">
+          <Link to="/search" aria-label="Search" className="inline-flex h-10 w-10 items-center justify-center text-[var(--color-text)] hover:text-pink-600">
                 <FontAwesomeIcon icon={faMagnifyingGlass} className="cursor-pointer text-[var(--color-text)] hover:text-pink-600"/>
             </Link>
 
-            <Link to="/cart" aria-label="Cart"> <FontAwesomeIcon icon={faBagShopping} className="cursor-pointer text-[var(--color-text)] hover:text-pink-600"/>
+          <Link to="/cart" aria-label="Cart" className="inline-flex h-10 w-10 items-center justify-center text-[var(--color-text)] hover:text-pink-600">
+            <FontAwesomeIcon icon={faBagShopping} />
+            </Link>
+
+            <Link to="/profile" aria-label="Profile" className="hidden h-10 w-10 items-center justify-center text-[var(--color-text)] hover:text-pink-600 md:inline-flex">
+              <FontAwesomeIcon icon={faUser} />
             </Link>
 
             <button type="button" className={`inline-flex h-10 w-10 items-center justify-center text-[var(--color-text)] hover:text-pink-600 md:hidden ${isMenuOpen ? 'invisible' : 'visible'}`} aria-label="Open navigation menu" aria-expanded={isMenuOpen} aria-controls="mobile-navigation" onClick={() => setIsMenuOpen(true)} >
