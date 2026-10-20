@@ -1,17 +1,64 @@
+import { useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
-function SearchBar({ placeholder }) {
+const FILTERS = [
+  'All Product',
+  'Skincare',
+  'Makeup',
+  'Hair Care',
+  'Body Care',
+  'Fragrance',
+  'Tools & Accessories',
+]
+
+function SearchBar({ placeholder ="Search Product Or Soming Els ... " }) {
+  const [filter, setFilter] = useState('All Product')
+
   return (
-    <form role="search" className="w-full h-10">
-      <div className="relative min-w-0 w-full h-full">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 sm:h-5 sm:w-5" aria-hidden="true"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+    <div className="flex w-full items-center gap-3">
+      <form role="search" onSubmit={(event) => event.preventDefault()} className="relative min-w-0 flex-1">
+        <FontAwesomeIcon
+          icon={faMagnifyingGlass}
+          aria-hidden="true"
+          className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 sm:h-5 sm:w-5"
+        />
         <input
           type="text"
           name="q"
           placeholder={placeholder}
-          className="w-full h-full rounded-xl border border-[#E9E6EA] bg-white pl-11 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-300 sm:pl-12 sm:text-base"
+          className="h-11 w-full rounded-full border border-[#E9E6EA] bg-white pl-11 pr-28 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-pink-300 focus:ring-2 focus:ring-pink-100 sm:pl-12 sm:text-base"
+        />
+        <button
+          type="submit"
+          className="absolute right-1.5 top-1/2 h-8 -translate-y-1/2 cursor-pointer rounded-full bg-pink-600 px-4 text-sm font-medium text-white transition hover:bg-pink-700"
+        >
+          Search
+        </button>
+      </form>
+      <div className="relative shrink-0">
+        <select
+          value={filter}
+          onChange={(event) => setFilter(event.target.value)}
+          className="h-11 w-48 cursor-pointer appearance-none rounded-full border border-[#E9E6EA] bg-white pl-4 pr-10  text-sm font-medium text-gray-600 outline-none transition hover:border-pink-300 focus:border-pink-300 focus:ring-2 focus:ring-pink-100"
+        >
+          {FILTERS.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+        <FontAwesomeIcon
+          icon={faChevronDown}
+          aria-hidden="true"
+          className="pointer-events-none absolute right-4 top-1/2 h-3 w-3 -translate-y-1/2 text-gray-400"
         />
       </div>
-    </form>
+    </div>
+
+    // <div className="mx-auto my-4 max-w-7xl px-6">
+    //   <SearchBar />
+    // </div>
   )
 }
 
