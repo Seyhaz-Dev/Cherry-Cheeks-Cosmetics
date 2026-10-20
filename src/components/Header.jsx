@@ -10,7 +10,7 @@ import {
 
 function Header() {
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-[var(--color-header-footer)] shadow-sm">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
 
         <div>

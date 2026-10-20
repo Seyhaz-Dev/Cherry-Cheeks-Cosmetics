@@ -1,5 +1,7 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Link } from 'react-router-dom'
+import logo from '../assets/logo1.png'
 
 import {
   faFacebook,
@@ -17,21 +19,24 @@ import {
 
 function Footer() {
   return (
-    <footer className="bg-[#705658] px-6 pt-12 text-white">
+    <footer className="bg-[var(--color-header-footer)] px-6 pt-12 text-white">
 
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 pb-10 sm:grid-cols-2 lg:grid-cols-4">
 
         {/* Brand */}
         <div>
-          <h2 className="text-2xl font-bold tracking-widest">
-            CHERRY CHEEKS
-          </h2>
+          <div>
+            <Link to="/">
+              <img src={logo} alt="Company Logo" className="h-17 w-auto object-contain"
+              />
+            </Link>
+          </div>
 
-          <p className="mt-2 text-xs tracking-widest text-pink-200">
+          <p className="mt-2 text-xs tracking-widest text-[var(--color-black)]">
             SKINCARE &amp; WELLNESS
           </p>
 
-          <p className="mt-4 text-sm leading-6 text-pink-100">
+          <p className="mt-4 text-sm leading-6 text-[var(--color-black)]">
             Discover your natural glow with skincare made to
             make you feel beautiful and confident every day.
           </p>
@@ -44,7 +49,7 @@ function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label="Facebook"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-pink-400"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-pink-text)] hover:bg-pink-400"
             >
               <FontAwesomeIcon icon={faFacebook} />
             </a>
@@ -54,7 +59,7 @@ function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label="Instagram"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-pink-400"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-pink-text)] hover:bg-pink-400"
             >
               <FontAwesomeIcon icon={faInstagram} />
             </a>
@@ -64,7 +69,7 @@ function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label="YouTube"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-pink-400"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-pink-text)] hover:bg-pink-400"
             >
               <FontAwesomeIcon icon={faYoutube} />
             </a>
@@ -73,103 +78,104 @@ function Footer() {
         </div>
 
         {/* Quick Links */}
-        <div>
-          <h3 className="mb-5 text-lg font-semibold">
-            Quick Links
-          </h3>
+        <div className='flex gap-40  '>
+          <div>
+            <h3 className="mb-5 text-base text-[var(--color-pink-text)] font-semibold">
+              Quick Links
+            </h3>
 
-          <ul className="space-y-3 text-sm text-pink-100">
-            <li>
-              <a href="/" className="hover:text-white">Home</a>
-            </li>
+            <ul className="space-y-3 text-sm text-[var(--color-black)]">
+              <li>
+                <a href="/" className=" hover:text-white">Home</a>
+              </li>
 
-            <li>
-              <a href="/shop" className="hover:text-white">Shop All</a>
-            </li>
+              <li>
+                <a href="/shop" className="hover:text-white">Shop All</a>
+              </li>
 
-            <li>
-              <a href="/about" className="hover:text-white">About Us</a>
-            </li>
+              <li>
+                <a href="/about" className="hover:text-white">About Us</a>
+              </li>
 
-            <li>
-              <a href="/contact" className="hover:text-white">Contact Us</a>
-            </li>
-          </ul>
-        </div>
+              <li>
+                <a href="/contact" className="hover:text-white">Contact Us</a>
+              </li>
+            </ul>
+          </div>
 
-        {/* Customer Care */}
-        <div>
-          <h3 className="mb-5 text-lg font-semibold">
-            Customer Care
-          </h3>
+          {/* Customer Care */}
+          <div>
+            <h3 className="mb-5 text-lg text-[var(--color-pink-text)] font-semibold">
+              Customer Care
+            </h3>
 
-          <ul className="space-y-4 text-sm text-pink-100">
-            <li>
-              <a href="#shipping" className="hover:text-white">
-                Shipping Information
-              </a>
-            </li>
+            <ul className="space-y-4 text-sm text-[var(--color-black)]">
+              <li>
+                <a href="#shipping" className="hover:text-white">
+                  Shipping Information
+                </a>
+              </li>
 
-            <li>
-              <a href="#returns" className="hover:text-white">
-                Returns &amp; Refunds
-              </a>
-            </li>
+              <li>
+                <a href="#returns" className="hover:text-white">
+                  Returns &amp; Refunds
+                </a>
+              </li>
 
-            <li>
-              <a href="#faq" className="hover:text-white">FAQs</a>
-            </li>
+              <li>
+                <a href="#faq" className="hover:text-white">FAQs</a>
+              </li>
 
-            <li className="flex items-center gap-2">
-              <FontAwesomeIcon icon={faEnvelope} />
-              <span>hello@cherrycheeks.com</span>
-            </li>
+              <li className="flex items-center gap-2">
+                <FontAwesomeIcon icon={faEnvelope} />
+                <span>hello@cherrycheeks.com</span>
+              </li>
 
-            <li className="flex items-center gap-2">
-              <FontAwesomeIcon icon={faPhone} />
-              <span>Contact our team</span>
-            </li>
+              <li className="flex items-center gap-2">
+                <FontAwesomeIcon icon={faPhone} />
+                <span>Contact our team</span>
+              </li>
 
-            <li className="flex items-center gap-2">
-              <FontAwesomeIcon icon={faLocationDot} />
-              <span>Phnom Penh, Cambodia</span>
-            </li>
-          </ul>
-        </div>
+              <li className="flex items-center gap-2">
+                <FontAwesomeIcon icon={faLocationDot} />
+                <span>Phnom Penh, Cambodia</span>
+              </li>
+            </ul>
+          </div>
 
-        {/* Newsletter */}
-        <div>
-          <h3 className="mb-3 text-lg font-semibold">
-            Join Our Beauty Club
-          </h3>
+          {/* Newsletter */}
+          <div>
+            <h3 className="mb-3 text-lg text-[var(--color-pink-text)] font-semibold">
+              Join Our Beauty Club
+            </h3>
 
-          <p className="mb-5 text-sm leading-6 text-pink-100">
-            Subscribe for skincare tips, beauty news, and special offers.
-          </p>
+            <p className="mb-5 text-sm leading-6 text-[var(--color-black)]">
+              Subscribe for skincare tips, beauty news, and special offers.
+            </p>
 
-          <form className="flex overflow-hidden rounded-full border border-white/30 bg-white">
-            <input
-              type="email"
-              placeholder="Your email address"
-              className="min-w-0 flex-1 px-4 py-3 text-sm text-gray-800 outline-none"
-            />
+            <form className="flex overflow-hidden rounded-full border border-white/30 bg-[var(--color-white-text)]">
+              <input
+                type="email"
+                placeholder="Your email address"
+                className="min-w-0 flex-1 px-4 py-3 text-sm text-gray-800 outline-none"
+              />
 
-            <button
-              type="button"
-              aria-label="Subscribe"
-              className="bg-pink-400 px-5 text-white hover:bg-pink-500"
-            >
-              <FontAwesomeIcon icon={faPaperPlane} />
-            </button>
-          </form>
+              <button
+                type="button"
+                aria-label="Subscribe"
+                className="bg-[var(--color-button)] px-5 text-white hover:bg-pink-500"
+              >
+                <FontAwesomeIcon icon={faPaperPlane} />
+              </button>
+            </form>
 
-          <p className="mt-4 flex items-center gap-2 text-xs text-pink-200">
-            Made with
-            <FontAwesomeIcon icon={faHeart} />
-            for your skin
-          </p>
-        </div>
-
+            <p className="mt-4 flex items-center gap-2 text-xs text-[var(--color-pink-text)]">
+              Made with
+              <FontAwesomeIcon icon={faHeart} />
+              for your skin
+            </p>
+          </div>
+        </div>  
       </div>
 
       {/* Bottom Bar */}
