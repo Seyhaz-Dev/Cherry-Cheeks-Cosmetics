@@ -1,119 +1,92 @@
+
 import { useState } from "react";
 import productImage from "../assets/productcard.png";
 
-export default function ProductCard({
-  name = "Dewdrop Renewal Serum",
-  category = "FACE SERUM",
-  description = "Hydrate, nourish & reveal your natural glow.",
-  price = 68,
-  rating = 4.9,
-  reviews = 218,
-  image = productImage,
-  badge = "BESTSELLER",
-  sizes,
-}) {
-  const productSizes = sizes || [
-    { label: "30 ml", price: Math.round(price * 0.7) },
-    { label: "50 ml", price },
-  ];
-
-  const [favorite, setFavorite] = useState(false);
-  const [selectedSize, setSelectedSize] = useState(
-    productSizes.length - 1
-  );
-  const [added, setAdded] = useState(false);
+export default function ProductCard() {
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
 
   return (
-    <article className="group w-full max-w-[220px] overflow-hidden rounded-xl border border-[#FDF5FA] bg-white transition hover:-translate-y-1 hover:shadow-md">
+    <div className="w-full max-w-[280px] overflow-hidden rounded-2xl bg-white font-sans text-[#4A001F] shadow-md transition-shadow duration-300 hover:shadow-lg">
+
       {/* Product Image */}
-      <div className="relative m-1.5 overflow-hidden rounded-lg bg-[#FDF5FA]">
+      <div className="relative h-[175px] w-full overflow-hidden">
         <img
-          src={image}
-          alt={name}
-          className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          src={productImage}
+          alt="Dewdrop Renewal Serum"
+          className="h-full w-full object-cover"
         />
 
-        {badge && (
-          <span className="absolute left-2 top-2 rounded-full bg-white px-2 py-1 text-[8px] font-semibold tracking-wide text-[var(--color-pink-text)]">
-            {badge}
-          </span>
-        )}
+        {/* Bestseller Badge */}
+        <span className="absolute left-3 top-3 rounded-full bg-[#FDF5FA] px-3 py-1 text-[11px] font-medium text-[#4A001F]">
+          Bestseller
+        </span>
 
+        {/* Favorite Button */}
         <button
-          type="button"
-          onClick={() => setFavorite(!favorite)}
+          onClick={() => setIsFavorite(!isFavorite)}
           aria-label="Toggle favorite"
-          aria-pressed={favorite}
-          className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-white text-base text-[var(--color-pink-text)]"
+          aria-pressed={isFavorite}
+          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm transition-transform hover:scale-105"
         >
-          {favorite ? "♥" : "♡"}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill={isFavorite ? "#E7567E" : "none"}
+            stroke={isFavorite ? "#E7567E" : "#4A001F"}
+            strokeWidth="1.7"
+            className="h-4 w-4"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"
+            />
+          </svg>
         </button>
-
-        <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-white/95 px-2 py-1 text-[9px]">
-          <span className="text-amber-500">★</span>
-          <span className="font-medium">{rating}</span>
-          <span className="text-gray-400">({reviews})</span>
-        </div>
       </div>
 
-      {/* Product Information */}
-      <div className="px-2.5 pb-3 pt-1">
-        <p className="text-[8px] font-semibold tracking-[1px] text-[var(--color-pink-text)]">
-          {category}
+      {/* Product Details */}
+      <div className="px-4 pb-4 pt-3">
+        <p className="text-xs text-[#817874]">
+          Serum
         </p>
 
-        <h3 className="mt-1.5 line-clamp-2 text-sm font-medium leading-snug text-[#4A001F]">
-          {name}
-        </h3>
+        <div className="mt-1 flex items-start justify-between gap-2">
+          {/* Product Name */}
+          <h4 className="text-sm font-semibold leading-snug tracking-tight text-[#4A001F]">
+            Dewdrop Renewal Serum
+          </h4>
 
-        <p className="mt-1 line-clamp-2 min-h-[30px] text-[10px] leading-[15px] text-gray-500">
-          {description}
-        </p>
-
-        {/* Size Selection */}
-        <div className="mt-2.5 flex gap-1.5">
-          {productSizes.map((item, index) => (
-            <button
-              key={item.label}
-              type="button"
-              onClick={() => setSelectedSize(index)}
-              aria-pressed={selectedSize === index}
-              className={`rounded-full border px-2.5 py-1 text-[9px] transition ${
-                selectedSize === index
-                  ? "border-[var(--color-button)] bg-[var(--color-button)] text-white"
-                  : "border-[#F5DCE8] text-[#4A001F] hover:border-[var(--color-button)]"
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
+          {/* Product Price */}
+          <span className="shrink-0 text-sm font-semibold text-[#4A001F]">
+            $68
+          </span>
         </div>
 
-        {/* Price and Button */}
-        <div className="mt-3 flex items-center justify-between gap-1.5 border-t border-[#FDF5FA] pt-2.5">
-          <div>
-            <p className="text-[8px] text-gray-400">PRICE</p>
-            <p className="text-sm font-semibold text-[#4A001F]">
-              ${Number(productSizes[selectedSize].price).toFixed(2)}
-            </p>
+        {/* Product Rating */}
+        <div className="mt-2 flex items-center gap-2">
+          <div className="flex text-sm leading-none text-[#E7567E]">
+            {"★★★★★".split("").map((star, index) => (
+              <span key={index}>{star}</span>
+            ))}
           </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              setAdded(true);
-              setTimeout(() => setAdded(false), 1500);
-            }}
-            className={`rounded-full px-3 py-2 text-[9px] font-medium text-white transition ${
-              added
-                ? "bg-green-700"
-                : "bg-[var(--color-button)] hover:opacity-80"
-            }`}
-          >
-            {added ? "✓ Added" : "+ Add"}
-          </button>
+          <span className="text-xs text-[#817874]">
+            4.9 (218)
+          </span>
         </div>
+
+        {/* Add to Cart */}
+        <button
+          onClick={() => setCartCount(cartCount + 1)}
+          className="mt-3 w-full rounded-xl bg-[#E7567E] px-3 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-200 hover:bg-[#d94770] active:scale-[0.98]"
+        >
+          {cartCount > 0
+            ? `Added to cart (${cartCount})`
+            : "Add to cart"}
+        </button>
       </div>
-    </article>
+    </div>
   );
 }
