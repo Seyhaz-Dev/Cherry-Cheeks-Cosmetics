@@ -26,9 +26,9 @@ h2 {
 }
 
 h3 {
-  font-size: 28px;
+  font-size: 22px;
   line-height: 1;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 h4 {
@@ -44,10 +44,10 @@ body {
 
 /* MINJUU Colors */
 :root {
-  --color-header-footer: #E52EB5;
+  --color-header-footer: #FDF5FA;
   --color-background: #F8C7E8;
-  --color-button: #773C50;
-  --color-text: #4A001F;
+  --color-button: #E7567E;
+  --color-pink-text: #E7567E;
   --color-black: #000000;
   --color-white-text: #FFFFFF;
 }
