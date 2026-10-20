@@ -40,8 +40,8 @@ function Footer() {
             </p>
 
             <p className="mt-4 max-w-sm text-sm leading-7 text-[var(--color-black)]">
-              Discover your natural glow with skincare made to
-              make you feel beautiful and confident every day.
+              Discover your natural glow with <br />skincare made to
+              make you feel <br />beautiful and confident every day.
             </p>
 
             {/* Social Media */}
@@ -79,7 +79,7 @@ function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div className="ml-[80px]">
+          <div className="min-w-0">
             <h3 className="mb-5 text-base font-semibold text-[var(--color-pink-text)]">
               Quick Links
             </h3>
@@ -161,7 +161,7 @@ function Footer() {
                   icon={faPhone}
                   className="mt-1 shrink-0"
                 />
-                <span>Contact our team</span>
+                <span>+885 96 222 1351</span>
               </li>
 
               <li className="flex items-start gap-3">
