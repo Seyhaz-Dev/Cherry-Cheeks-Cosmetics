@@ -11,23 +11,6 @@ function Shop() {
           <SearchBar />
         </div>
 
-        <div className="mb-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
-              <span className="text-sm font-medium text-gray-700">Sort by:</span>
-              
-              <select className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 sm:w-auto">
-                <option>Featured</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
-                <option>Rating</option>
-                <option>Newest</option>
-              </select>
-
-            </div>
-          </div>
-        </div>
-
         <div className="mb-12">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <ProductCard image="src/assets/productcard.png" category="Serum"        name="Dewdrop Renewal Serum" price="68" rating="4.9" isBestseller={true}/>
