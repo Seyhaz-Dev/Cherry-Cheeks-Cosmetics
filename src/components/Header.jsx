@@ -33,8 +33,7 @@ function Header() {
 
         <div>
           <Link to="/">
-            <img src={logo} alt="Company Logo" className="h-14 w-auto object-contain md:h-17"
-            />
+            <img src={logo} alt="Company Logo" className="h-14 w-auto object-contain md:h-17"/>
           </Link>
         </div>
 
