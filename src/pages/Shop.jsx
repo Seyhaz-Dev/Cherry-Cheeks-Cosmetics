@@ -107,7 +107,7 @@ function Shop() {
         <div className="mb-12">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visibleProducts.map((product, index) => (
-              <ProductCard key={index} image={product.image} category={product.category} name={product.name} price={product.price} rating={product.rating} isBestseller={true}/> 
+              <ProductCard key={index} id={startIndex + index + 1} image={product.image} category={product.category} name={product.name} price={product.price} rating={product.rating} reviews={product.reviews}/>
             ))}
           </div>
         </div>
@@ -138,11 +138,7 @@ function Shop() {
         </div>
 
         <div className="relative mx-auto my-12 overflow-hidden rounded-3xl">
-          <img
-            src={shopBanner}
-            alt="Makeup products arranged on a pale pink background"
-            className="h-38 w-full object-cover sm:h-64 md:h-70 lg:h-76"
-          />
+          <img src={shopBanner} alt="Makeup products arranged on a pale pink background" className="h-38 w-full object-cover sm:h-64 md:h-70 lg:h-76" />
 
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center sm:items-start sm:text-left sm:p-6 md:p-8 lg:p-12">
             <p className="text-xs font-semibold text-[var(--color-text)] sm:text-sm md:text-base lg:text-lg">

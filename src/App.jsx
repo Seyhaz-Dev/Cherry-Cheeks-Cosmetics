@@ -11,6 +11,7 @@ import Register from './pages/auth/Register'
 import Login from './pages/auth/Login'
 
 function AppLayout() {
+  const location = useLocation()
   const isAuthPage = ['/login', '/register'].includes(location.pathname)
 
   return (
