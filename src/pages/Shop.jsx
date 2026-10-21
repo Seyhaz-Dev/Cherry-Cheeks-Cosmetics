@@ -28,10 +28,10 @@ function Shop() {
             <p className="text-xs font-semibold text-[var(--color-text)] sm:text-sm md:text-base lg:text-lg">
               The collection
             </p>
-            <h3 className="mt-2 text-xl font-bold text-[var(--color-text)] sm:text-2xl md:text-3xl lg:text-4xl">
+            <h3 className="mt-1 text-xl font-bold text-[var(--color-text)] sm:text-2xl md:text-3xl lg:text-4xl">
               Care, in every layer.
             </h3>
-            <p className="mt-3 max-w-2xl text-xs text-[var(--color-text)] sm:text-sm md:text-base lg:text-lg">
+            <p className="mt-1 max-w-2xl text-xs text-[var(--color-text)] sm:text-sm md:text-base lg:text-lg">
               Build your ritual with barrier-minded formulas created for lasting calm and luminosity.
             </p>
           </div>
