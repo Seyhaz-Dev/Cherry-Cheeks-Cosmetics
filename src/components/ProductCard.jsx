@@ -2,32 +2,39 @@
 import { useState } from "react";
 import productImage from "../assets/productcard.png";
 
-export default function ProductCard() {
+export default function ProductCard({
+  image = productImage,
+  name = "Dewdrop Renewal Serum",
+  category = "Serum",
+  price = 68,
+  rating = 4.9,
+  reviews = 218,
+}) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [cartCount, setCartCount] = useState(0);
 
   return (
-    <div className="w-full max-w-[280px] overflow-hidden rounded-2xl bg-white font-sans text-[#4A001F] shadow-md transition-shadow duration-300 hover:shadow-lg">
+    <div className="w-full max-w-[280px] overflow-hidden rounded-2xl bg-white font-sans text-[#4A001F] shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-lg">
 
-      {/* Product Image */}
-      <div className="relative h-[175px] w-full overflow-hidden">
+      {/* Product Image: same height for every card */}
+      <div className="relative h-[190px] w-full overflow-hidden bg-[#FDF5FA] sm:h-[200px]">
         <img
-          src={productImage}
-          alt="Dewdrop Renewal Serum"
-          className="h-full w-full object-cover"
+          src={image}
+          alt={name}
+          className="h-full w-full object-cover object-center"
         />
 
-        {/* Bestseller Badge */}
         <span className="absolute left-3 top-3 rounded-full bg-[#FDF5FA] px-3 py-1 text-[11px] font-medium text-[#4A001F]">
           Bestseller
         </span>
 
         {/* Favorite Button */}
         <button
+          type="button"
           onClick={() => setIsFavorite(!isFavorite)}
           aria-label="Toggle favorite"
           aria-pressed={isFavorite}
-          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm transition-transform hover:scale-105"
+          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm transition hover:scale-110"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -47,40 +54,42 @@ export default function ProductCard() {
       </div>
 
       {/* Product Details */}
-      <div className="px-4 pb-4 pt-3">
+      <div className="flex flex-col px-4 pb-4 pt-3">
         <p className="text-xs text-[#817874]">
-          Serum
+          {category}
         </p>
 
-        <div className="mt-1 flex items-start justify-between gap-2">
-          {/* Product Name */}
-          <h4 className="text-sm font-semibold leading-snug tracking-tight text-[#4A001F]">
-            Dewdrop Renewal Serum
+        <div className="mt-1 flex min-h-[40px] items-start justify-between gap-2">
+          <h4 className="line-clamp-2 text-sm font-semibold leading-snug tracking-tight text-[#4A001F]">
+            {name}
           </h4>
 
-          {/* Product Price */}
           <span className="shrink-0 text-sm font-semibold text-[#4A001F]">
-            $68
+            ${Number(price).toFixed(2)}
           </span>
         </div>
 
-        {/* Product Rating */}
+        {/* Yellow Rating Stars */}
         <div className="mt-2 flex items-center gap-2">
-          <div className="flex text-sm leading-none text-[#E7567E]">
+          <div
+            className="flex text-sm leading-none text-yellow-400"
+            aria-label={`${rating} out of 5 stars`}
+          >
             {"★★★★★".split("").map((star, index) => (
               <span key={index}>{star}</span>
             ))}
           </div>
 
           <span className="text-xs text-[#817874]">
-            4.9 (218)
+            {rating} ({reviews})
           </span>
         </div>
 
         {/* Add to Cart */}
         <button
+          type="button"
           onClick={() => setCartCount(cartCount + 1)}
-          className="mt-3 w-full rounded-xl bg-[#E7567E] px-3 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-200 hover:bg-[#d94770] active:scale-[0.98]"
+          className="mt-4 w-full rounded-xl bg-[#E7567E] px-3 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-[#d94770] active:scale-[0.98]"
         >
           {cartCount > 0
             ? `Added to cart (${cartCount})`
