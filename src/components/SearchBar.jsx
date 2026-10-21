@@ -12,11 +12,22 @@ const FILTERS = [
   'Tools & Accessories',
 ]
 
+const SORT_OPTIONS = [
+  'Featured',
+  'Price: Low to High',
+  'Price: High to Low',
+  'Rating',
+  'Newest',
+]
+
 function SearchBar({ placeholder ="Search Product Or Soming Els ... " }) {
   const [filter, setFilter] = useState('All Product')
+  const [sort, setSort] = useState('Featured')
 
   return (
-    <div className="flex w-full items-center gap-3">
+    <div className="flex w-full flex-col gap-3">
+      <div className="flex w-full items-center gap-3">
+
       <form role="search" onSubmit={(event) => event.preventDefault()} className="relative min-w-0 flex-1">
         <FontAwesomeIcon
           icon={faMagnifyingGlass}
@@ -36,6 +47,7 @@ function SearchBar({ placeholder ="Search Product Or Soming Els ... " }) {
           Search
         </button>
       </form>
+
       <div className="relative shrink-0">
         <select
           value={filter}
@@ -54,11 +66,33 @@ function SearchBar({ placeholder ="Search Product Or Soming Els ... " }) {
           className="pointer-events-none absolute right-4 top-1/2 h-3 w-3 -translate-y-1/2 text-gray-400"
         />
       </div>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <span className="text-sm font-medium text-gray-700">Sort by:</span>
+        <div className="relative shrink-0">
+          <select
+            value={sort}
+            onChange={(event) => setSort(event.target.value)}
+            aria-label="Sort by"
+            className="h-11 w-48 cursor-pointer appearance-none rounded-full border border-[#E9E6EA] bg-white pl-4 pr-10 text-sm font-medium text-gray-600 outline-none transition hover:border-pink-300 focus:border-pink-300 focus:ring-2 focus:ring-pink-100"
+          >
+            {SORT_OPTIONS.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+          <FontAwesomeIcon
+            icon={faChevronDown}
+            aria-hidden="true"
+            className="pointer-events-none absolute right-4 top-1/2 h-3 w-3 -translate-y-1/2 text-gray-400"
+          />
+        </div>
+      </div>
+
     </div>
 
-    // <div className="mx-auto my-4 max-w-7xl px-6">
-    //   <SearchBar />
-    // </div>
   )
 }
 
