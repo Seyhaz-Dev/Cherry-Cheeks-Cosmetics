@@ -1,4 +1,8 @@
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+
 function Login() {
+  const navigate = useNavigate()
   return (
     <div className="flex min-h-screen items-center justify-center  px-3 py-6 sm:px-4 sm:py-8">
         <div className="w-full max-w-[500px] rounded-[26px] bg-[#fefefe] p-4  ring-1 ring-[#f1d9e5] sm:p-5 md:p-6">
@@ -34,7 +38,7 @@ function Login() {
                 
                 </label>
 
-                <button type="submit" className="mt-1 w-full rounded-xl bg-[#1d7ef0] px-4 py-3 text-[0.96rem] font-semibold text-white transition hover:bg-[#1770d8] sm:text-[1rem]">
+                <button type="button" onClick={() => navigate("/")} className="mt-1 w-full rounded-xl bg-[#1d7ef0] px-4 py-3 text-[0.96rem] font-semibold text-white transition hover:bg-[#1770d8] sm:text-[1rem]">
                     Sign in
                 </button>
             </form>
