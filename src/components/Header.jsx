@@ -46,13 +46,6 @@ function Header() {
            </Link>
          </div>
 
-<<<<<<< HEAD
-        <div>
-          <Link to="/">
-            <img src={logo} alt="Company Logo" className="h-14 w-auto object-contain md:h-17"/>
-          </Link>
-        </div>
-=======
          {/* Desktop Navigation */}
          <div className="hidden items-center gap-8 md:flex">
            <Link
@@ -61,7 +54,6 @@ function Header() {
            >
              Home
            </Link>
->>>>>>> efa42c6 (done header feat/bag)
 
            <Link
              to="/shop"
