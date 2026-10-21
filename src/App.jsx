@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 
 import Header from './components/Header'
 import Footer from './components/Footer'
+import { CartProvider } from './context/CartContext'
 
 import Home from './pages/Home'
 import Contact from './pages/Contact'
@@ -10,7 +11,6 @@ import Register from './pages/auth/Register'
 import Login from './pages/auth/Login'
 
 function AppLayout() {
-  const location = useLocation()
   const isAuthPage = ['/login', '/register'].includes(location.pathname)
 
   return (
@@ -35,7 +35,9 @@ function AppLayout() {
 function App() {
   return (
     <BrowserRouter>
-      <AppLayout />
+      <CartProvider>
+        <AppLayout />
+      </CartProvider>
     </BrowserRouter>
   )
 }
