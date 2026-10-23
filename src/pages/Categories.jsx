@@ -2,8 +2,8 @@ import  SearchBar  from "../components/SearchBar";
 import ProductCard from "../components/ProductCard";
 export default function CategoryBanner() {
   return (
-    <section className="mx-auto w-full overflow-hidden border-y-1 border-[#e8dedd] bg-[#faf8f4]">
-      <div className="relative flex min-h-[285px] items-center overflow-hidden">
+    <section className="mx-auto w-full overflow-hidden border-y-1 border-[#e8dedd] ">
+      <div className="relative flex min-h-[285px] bg-[#faf8f4] items-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-y-0 right-0 w-[55%]">
           <img
