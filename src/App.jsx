@@ -8,8 +8,7 @@ import Home from './pages/Home'
 import Contact from './pages/Contact'
 import Shop from './pages/Shop'
 import Cart from './pages/Cart'
-import Categories from './pages/Categories'
-import ProductDetail from './pages/ProductDetail'
+import Checkout from './pages/Checkout'
 import Register from './pages/auth/Register'
 import Login from './pages/auth/Login'
 import OrderConfirmation from './pages/OrderConfirmation'
@@ -28,9 +27,7 @@ function AppLayout() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/productDetail" element={<ProductDetail />} />
-          <Route path="/orderComfirm" element={<OrderConfirmation/>}/>
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
         </Routes>

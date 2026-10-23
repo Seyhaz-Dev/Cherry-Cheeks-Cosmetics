@@ -125,12 +125,12 @@ export default function Cart() {
                 <span>${subtotal.toFixed(2)}</span>
               </div>
 
-              <button
-                onClick={() => alert("Checkout coming soon!")}
-                className="w-full rounded-full bg-pink-600 px-5 py-3 text-white hover:bg-pink-700"
+              <Link
+                to="/checkout"
+                className="block w-full rounded-full bg-pink-600 px-5 py-3 text-center text-white transition hover:bg-pink-700"
               >
-                Proceed to Checkout
-              </button>
+                Proceed to Checkout →
+              </Link>
 
               <Link
                 to="/"
