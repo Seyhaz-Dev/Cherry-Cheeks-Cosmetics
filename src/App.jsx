@@ -1,8 +1,10 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 
 import Header from './components/Header'
 import Footer from './components/Footer'
 import { CartProvider } from './context/CartContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import AdminLayout from './layouts/AdminLayout'
 
 import Home from './pages/Home'
 import About from './pages/About'
@@ -15,21 +17,56 @@ import Checkout from './pages/Checkout'
 
 import Categories from './pages/Categories'
 import ProductDetail from './pages/ProductDetail'
+import OrderConfirmation from './pages/OrderConfirmation'
+import OrderFail from './pages/OrderFail'
 import Register from './pages/auth/Register'
 import Login from './pages/auth/Login'
+import Dashboard from './pages/admin/Dashboard'
+import ProductManagement from './pages/admin/ProductManagement'
+
+
+function AdminRoute() {
+  const { user } = useAuth()
+
+  return user?.role === 'admin' ? <AdminLayout /> : <Navigate to="/" replace />
+}
+
+function AdminSection({ title }) {
+  return (
+    <section className="rounded-lg border border-[#f0d9e4] bg-white p-6">
+      <h1 className="mt-2 text-2xl font-semibold text-[#30252a]">{title}</h1>
+    </section>
+  )
+}
+
+function EntryRoute() {
+  const { user } = useAuth()
+
+  if (!user) {
+    return <Navigate to="/login" replace />
+  }
+
+  if (user.role === 'admin') {
+    return <Navigate to="/admin" replace />
+  }
+
+  return <Home />
+}
 import OrderConfirmation from './pages/OrderConfirmation'
 import OrderFail from './pages/OrderFail'
 
 function AppLayout() {
   const location = useLocation()
   const isAuthPage = ['/login', '/register'].includes(location.pathname)
+  const isAdminPage = location.pathname.startsWith('/admin')
 
   return (
     <div className="flex min-h-screen flex-col">
-      {!isAuthPage && <Header />}
+      {!isAuthPage && !isAdminPage && <Header />}
 
       <main className="flex-1">
         <Routes>
+          <Route path="/" element={<EntryRoute />} />
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
@@ -47,11 +84,18 @@ function AppLayout() {
           <Route path="/productDetail" element={<ProductDetail />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+
+
+          <Route path="/admin" element={<AdminRoute />}>
+            <Route index element={<Dashboard />} />
+            <Route path="products" element={<ProductManagement />} />
+            
+          </Route>
           <Route path="/orderFail" element={<OrderFail />} />
         </Routes>
       </main>
 
-      {!isAuthPage && <Footer />}
+      {!isAuthPage && !isAdminPage && <Footer />}
     </div>
   )
 }
@@ -59,9 +103,11 @@ function AppLayout() {
 function App() {
   return (
     <BrowserRouter>
-      <CartProvider>
-        <AppLayout />
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <AppLayout />
+        </CartProvider>
+      </AuthProvider>
     </BrowserRouter>
   )
 }
