@@ -12,6 +12,7 @@ import Categories from './pages/Categories'
 import ProductDetail from './pages/ProductDetail'
 import Register from './pages/auth/Register'
 import Login from './pages/auth/Login'
+import OrderConfirmation from './pages/OrderConfirmation'
 
 function AppLayout() {
   const location = useLocation()
@@ -29,6 +30,7 @@ function AppLayout() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/productDetail" element={<ProductDetail />} />
+          <Route path="/orderComfirm" element={<OrderConfirmation/>}/>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
         </Routes>
