@@ -9,8 +9,7 @@ import Contact from './pages/Contact'
 import Shop from './pages/Shop'
 import Cart from './pages/Cart'
 
-import Categories from './pages/Categories'
-import ProductDetail from './pages/ProductDetail'
+
 import Checkout from './pages/Checkout'
 
 import Categories from './pages/Categories'
@@ -35,9 +34,7 @@ function AppLayout() {
           <Route path="/cart" element={<Cart />} />
 
 
-          <Route path="/categories" element={<Categories />} />
-          
-          <Route path="/productDetail" element={<ProductDetail />} />
+      
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orderComfirm" element={<OrderConfirmation/>}/>
 
