@@ -16,8 +16,6 @@ function Register() {
   const handleRegister = (e) => {
     e.preventDefault();
 
-    alert("Create account button works!");
-
     if (password !== confirmPassword) {
         alert("Passwords do not match!");
         return;
@@ -28,8 +26,7 @@ function Register() {
         return;
     }
 
-    alert("Account form completed successfully!");
-    navigate("/login");
+    navigate("/");
     };
 
   return (
@@ -137,6 +134,7 @@ function Register() {
               type="checkbox"
               checked={agree}
               onChange={(e) => setAgree(e.target.checked)}
+              required
               className="mt-0.5 h-4 w-4 accent-blue-600"
             />
             <span>
@@ -151,7 +149,7 @@ function Register() {
             </span>
           </label>
 
-          <button  type="button" onClick={() => alert("Button works!")} className="mt-1 w-full rounded-xl bg-[#1d7ef0] px-4 py-3 text-base font-semibold text-white hover:bg-[#1770d8]">
+          <button type="submit" className="mt-1 w-full rounded-xl bg-[#1d7ef0] px-4 py-3 text-base font-semibold text-white hover:bg-[#1770d8]">
             Create account
           </button>
         </form>
