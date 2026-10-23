@@ -69,17 +69,35 @@ function Contact() {
                                 </span>
                             </div>
                         </address>
+
+                        <div className="mt-8 overflow-hidden rounded-lg border border-[#eadde2] bg-white">
+                            <iframe
+                                title="Google Map showing Phnom Penh, Cambodia"
+                                src="https://www.google.com/maps?q=Phnom%20Penh%2C%20Cambodia&output=embed"
+                                className="h-52 w-full border-0"
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            />
+                            <a
+                                href="https://www.google.com/maps/search/?api=1&query=Phnom%20Penh%2C%20Cambodia"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="block border-t border-[#eadde2] px-4 py-3 text-sm font-medium text-[#a9365b] hover:bg-[#fbf4f6]"
+                            >
+                                Open in Google Maps
+                            </a>
+                        </div>
                     </section>
 
-                    <section className="bg-white px-6 py-8 rounded-lg sm:px-9 sm:py-10" aria-labelledby="contact-form-heading">
+                    <section className="rounded-lg bg-white px-5 py-6 sm:px-7 sm:py-8" aria-labelledby="contact-form-heading">
                         <h2 id="contact-form-heading" className="mb-2 text-xl font-semibold text-[#3b1725]">
                             Send us a message
                         </h2>
-                        <p className="mb-7 text-sm leading-6 text-[#6c5b61]">
+                        <p className="mb-5 text-sm leading-6 text-[#6c5b61]">
                             Fill in the details below and your email app will open with your message ready to send.
                         </p>
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
+                        <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <label htmlFor="contact-name" className="mb-2 block text-sm font-medium text-[#3b1725]">Your name</label>
                                 <input id="contact-name" name="name" type="text" autoComplete="name" required
@@ -94,7 +112,7 @@ function Contact() {
 
                             <div>
                                 <label htmlFor="contact-message" className="mb-2 block text-sm font-medium text-[#3b1725]">How can we help?</label>
-                                <textarea id="contact-message" name="message" rows="5" required
+                                <textarea id="contact-message" name="message" rows="4" required
                                     className="w-full resize-y rounded-md border border-[#dfd2d8] bg-white px-3.5 py-3 text-sm leading-6 text-[#3b1725] outline-none transition placeholder:text-[#9a8990] focus:border-[#b34467] focus:ring-2 focus:ring-[#b34467]/15" />
                             </div>
 
