@@ -12,6 +12,9 @@ import Cart from './pages/Cart'
 import Categories from './pages/Categories'
 import ProductDetail from './pages/ProductDetail'
 import Checkout from './pages/Checkout'
+
+import Categories from './pages/Categories'
+import ProductDetail from './pages/ProductDetail'
 import Register from './pages/auth/Register'
 import Login from './pages/auth/Login'
 import OrderConfirmation from './pages/OrderConfirmation'
@@ -37,6 +40,11 @@ function AppLayout() {
           <Route path="/productDetail" element={<ProductDetail />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orderComfirm" element={<OrderConfirmation/>}/>
+
+
+          <Route path="/categories" element={<Categories />} />
+          
+          <Route path="/productDetail" element={<ProductDetail />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
         </Routes>
