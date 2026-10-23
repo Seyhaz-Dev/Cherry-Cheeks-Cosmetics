@@ -1,6 +1,6 @@
 function OrderConfirmation() {
   return (
-    <section className="bg-[var(--color-background)] font-bold">
+    <section className="bg-[#fbf8f5] font-bold">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6 lg:gap-10 lg:py-10">
 
             <div className="flex w-full flex-col gap-5 rounded-xl border border-gray-300 px-5 py-5 sm:px-8 sm:py-6 lg:px-10">
