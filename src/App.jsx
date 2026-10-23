@@ -14,6 +14,7 @@ import ProductDetail from './pages/ProductDetail'
 import Checkout from './pages/Checkout'
 import Register from './pages/auth/Register'
 import Login from './pages/auth/Login'
+import OrderConfirmation from './pages/OrderConfirmation'
 
 function AppLayout() {
   const location = useLocation()
@@ -35,6 +36,7 @@ function AppLayout() {
           
           <Route path="/productDetail" element={<ProductDetail />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orderComfirm" element={<OrderConfirmation/>}/>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
         </Routes>
