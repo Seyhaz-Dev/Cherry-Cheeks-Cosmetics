@@ -4,7 +4,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 function OrderFail() {
   return (
-    <section className="min-h-screen w-full bg-[var(--color-background)] font-bold">
+    <section className="min-h-screen w-full bg-[#fbf8f5] font-bold">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:gap-10 lg:px-8 lg:py-12">
         <div className="flex w-full flex-col items-center gap-6 rounded-xl border border-gray-300 px-5 py-8 text-center sm:flex-row sm:items-start sm:gap-8 sm:px-8 sm:py-10 sm:text-left lg:px-10">
           <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-red-500 sm:h-20 sm:w-20 lg:h-24 lg:w-24">
