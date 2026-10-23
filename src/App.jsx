@@ -11,6 +11,7 @@ import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import Register from './pages/auth/Register'
 import Login from './pages/auth/Login'
+import OrderConfirmation from './pages/OrderConfirmation'
 
 function AppLayout() {
   const location = useLocation()
