@@ -14,31 +14,31 @@ body {
 
 /* Text Styles */
 h1 {
-  font-size: 56px;
+  font-size: 42px;
   line-height: 1;
   font-weight: 700;
 }
 
 h2 {
-  font-size: 40px;
+  font-size: 22px;
   line-height: 1;
   font-weight: 700;
 }
 
 h3 {
-  font-size: 22px;
+  font-size: 18px;
   line-height: 1;
   font-weight: 400;
 }
 
 h4 {
-  font-size: 20px;
+  font-size: 16px;
   line-height: 1;
   font-weight: 600;
 }
 
 body {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -55,13 +55,13 @@ body {
 /* Common Styles */
 button {
   font-family: inherit;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
 }
 
 a {
   text-decoration: none;
-  color: inherit;
+
 }
 
 img {
