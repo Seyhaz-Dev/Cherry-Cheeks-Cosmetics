@@ -99,7 +99,7 @@ function Shop() {
   const visibleProducts = products.slice(startIndex, startIndex + itemsPerPage)
 
   return (
-    <section className="px-4 py-6 text-[var(--color-text)] sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+    <section className="px-4 py-6 text-[var(--color-text)]  bg-[#fbf8f5] sm:px-6 sm:py-8 lg:px-8 lg:py-10">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6">
           <SearchBar />
