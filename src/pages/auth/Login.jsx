@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   // Store the email and password entered by the user
   const [email, setEmail] = useState("");
@@ -11,19 +13,21 @@ function Login() {
   // Store checkbox and password visibility states
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
   // Handle form submission
-  const handleLogin = (e) => {e.preventDefault();
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setError("");
 
-    if (!email || !password) {
-      alert("Please enter your email and password.");
+    const result = login({ email, password, rememberMe });
+
+    if (result.error) {
+      setError(result.error);
       return;
     }
 
-    // Demo only: this does not verify the user's credentials.
-    alert(`Welcome back, ${email}!`);
-
-    navigate("/");
+    navigate(result.user.role === "admin" ? "/admin" : "/", { replace: true });
   };
 
   return (
@@ -40,7 +44,11 @@ function Login() {
           Return to your saved rituals, orders, and rewards.
         </p>
 
+       
+
         <form onSubmit={handleLogin} className="space-y-4">
+
+          {error && <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
 
           <div>
             <label htmlFor="email" className="mb-1.5 block text-[0.8rem] font-semibold text-[#2c2b2d] sm:text-[0.85rem]">

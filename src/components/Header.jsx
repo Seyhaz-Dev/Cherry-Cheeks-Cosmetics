@@ -1,9 +1,10 @@
 
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/logo1.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 
 import {
  faBagShopping,
@@ -13,6 +14,7 @@ import {
  faHouse,
  faLayerGroup,
  faMagnifyingGlass,
+ faRightFromBracket,
  faShop,
  faUser,
  faXmark,
@@ -29,6 +31,14 @@ const mobileLinks = [
 function Header() {
  const [isMenuOpen, setIsMenuOpen] = useState(false);
  const { cartCount } = useCart();
+ const { user, logout } = useAuth();
+ const navigate = useNavigate();
+
+ const handleLogout = () => {
+   logout();
+   setIsMenuOpen(false);
+   navigate("/");
+ };
 
  return (
    <>
@@ -110,14 +120,34 @@ function Header() {
              )}
            </Link>
 
-           {/* Profile */}
-           <Link
-             to="/profile"
-             aria-label="Profile"
-             className="hidden h-10 w-10 items-center justify-center text-[var(--color-text)] transition hover:text-pink-600 md:inline-flex"
-           >
-             <FontAwesomeIcon icon={faUser} />
-           </Link>
+          {user ? (
+            <div className="hidden items-center gap-3 md:flex">
+              {user.role === "admin" && (
+                <Link to="/admin" className="text-sm font-medium text-pink-700 hover:text-pink-900">
+                  Admin
+                </Link>
+              )}
+              <span className="text-sm text-gray-600">
+                {user.firstName} · {user.role}
+              </span>
+              <button
+                type="button"
+                onClick={handleLogout}
+                aria-label="Sign out"
+                className="inline-flex h-10 w-10 items-center justify-center text-[var(--color-text)] transition hover:text-pink-600"
+              >
+                <FontAwesomeIcon icon={faRightFromBracket} />
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              aria-label="Sign in"
+              className="hidden h-10 w-10 items-center justify-center text-[var(--color-text)] transition hover:text-pink-600 md:inline-flex"
+            >
+              <FontAwesomeIcon icon={faUser} />
+            </Link>
+          )}
 
            {/* Mobile Menu Button */}
            <button
@@ -205,25 +235,48 @@ function Header() {
              ))}
            </nav>
 
-           {/* Mobile Profile */}
-           <div className="mt-4 border-t border-pink-100 px-6 py-4">
-             <Link
-               to="/profile"
-               onClick={() => setIsMenuOpen(false)}
-               className="flex items-center gap-3 text-gray-800 transition hover:text-pink-600"
-             >
-               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-pink-500 shadow-sm">
-                 <FontAwesomeIcon icon={faUser} />
-               </span>
-
-               <span className="flex flex-col leading-tight">
-                 <span className="font-medium">My Profile</span>
-                 <span className="mt-1 text-sm text-gray-500">
-                   Customer account
-                 </span>
-               </span>
-             </Link>
-           </div>
+          <div className="mt-4 border-t border-pink-100 px-6 py-4">
+            {user ? (
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-pink-500 shadow-sm">
+                    <FontAwesomeIcon icon={faUser} />
+                  </span>
+                  <span className="flex min-w-0 flex-col leading-tight">
+                    <span className="truncate font-medium">{user.firstName} {user.lastName}</span>
+                    <span className="mt-1 text-sm capitalize text-gray-500">{user.role}</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  {user.role === "admin" && (
+                    <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="text-sm font-medium text-pink-700">
+                      Admin
+                    </Link>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    aria-label="Sign out"
+                    title="Sign out"
+                    className="inline-flex size-10 shrink-0 items-center justify-center rounded-full text-gray-600 transition hover:bg-pink-50 hover:text-pink-600"
+                  >
+                    <FontAwesomeIcon icon={faRightFromBracket} aria-hidden="true" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-3 text-gray-800 transition hover:text-pink-600"
+              >
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-pink-500 shadow-sm">
+                  <FontAwesomeIcon icon={faUser} />
+                </span>
+                <span className="font-medium">Sign in or register</span>
+              </Link>
+            )}
+          </div>
          </aside>
        </div>
      </header>
