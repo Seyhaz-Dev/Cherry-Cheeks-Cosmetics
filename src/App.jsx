@@ -6,6 +6,7 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import Contact from './pages/Contact'
 import Shop from './pages/Shop'
+import ProductDetail from './pages/ProductDetail'
 
 function App() {
   return (
@@ -16,9 +17,10 @@ function App() {
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/product-detail" element={<ProductDetail />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/shop" element={<Shop />} />
-          </Routes>
+            </Routes>
         </main>
 
         <Footer />
