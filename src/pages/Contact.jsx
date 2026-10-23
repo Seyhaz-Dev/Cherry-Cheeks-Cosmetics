@@ -39,7 +39,7 @@ function Contact() {
                         </p>
 
                         <address className="space-y-7 not-italic">
-                            <a href="mailto:hello@cherrycheeks.com" className="group flex items-start gap-4 text-[#3b1725]">
+                            <a href="mailto:cherrycheeks@gmail.com" className="group flex items-start gap-4 text-[#3b1725]">
                                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#b34467] ring-1 ring-[#eadde2]">
                                     <Mail size={18} aria-hidden="true" />
                                 </span>
