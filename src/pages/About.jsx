@@ -41,7 +41,7 @@ const team = [
 
 export default function About() {
   return (
-    <main className="min-h-screen bg-[#f9d9e5] font-sans text-[#292323]">
+    <main className="min-h-screen bg-[#fbf8f5] font-sans text-[#292323]">
 
       {/* OUR STORY */}
       <section className="px-5 py-8 text-center sm:py-12">
