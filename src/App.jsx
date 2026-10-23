@@ -6,6 +6,7 @@ import { CartProvider } from './context/CartContext'
 
 import Home from './pages/Home'
 import Contact from './pages/Contact'
+import Categories from './pages/Categories'
 import Shop from './pages/Shop'
 import Cart from './pages/Cart'
 import Register from './pages/auth/Register'
