@@ -10,10 +10,7 @@ import Home from './pages/Home'
 import Contact from './pages/Contact'
 import Shop from './pages/Shop'
 import Cart from './pages/Cart'
-
-
 import Checkout from './pages/Checkout'
-
 import Categories from './pages/Categories'
 import ProductDetail from './pages/ProductDetail'
 import Register from './pages/auth/Register'
@@ -50,6 +47,8 @@ function EntryRoute() {
 
   return <Home />
 }
+import OrderFail from './pages/OrderFail'
+
 
 function AppLayout() {
   const location = useLocation()
@@ -85,6 +84,7 @@ function AppLayout() {
             <Route path="products" element={<ProductManagement />} />
             
           </Route>
+          <Route path="/orderFail" element={<OrderFail />} />
         </Routes>
       </main>
 
