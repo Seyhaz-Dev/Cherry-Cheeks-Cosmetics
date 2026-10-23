@@ -6,10 +6,9 @@ import { CartProvider } from './context/CartContext'
 
 import Home from './pages/Home'
 import Contact from './pages/Contact'
-import Categories from './pages/Categories'
 import Shop from './pages/Shop'
-import ProductDetail from './pages/ProductDetail'
 import Cart from './pages/Cart'
+import ProductDetail from './pages/ProductDetail'
 import Register from './pages/auth/Register'
 import Login from './pages/auth/Login'
 
@@ -27,6 +26,7 @@ function AppLayout() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/productDetail" element={<ProductDetail />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
         </Routes>
@@ -40,20 +40,6 @@ function AppLayout() {
 function App() {
   return (
     <BrowserRouter>
-      <div className="flex min-h-screen flex-col">
-        <Header />
-
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/product-detail" element={<ProductDetail />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/shop" element={<Shop />} />
-            </Routes>
-        </main>
-
-        <Footer />
-      </div>
       <CartProvider>
         <AppLayout />
       </CartProvider>
