@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 
 function Register() {
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -12,22 +14,31 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agree, setAgree] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
   const handleRegister = (e) => {
     e.preventDefault();
+    setError("");
 
     if (password !== confirmPassword) {
-        alert("Passwords do not match!");
-        return;
+      setError("Passwords do not match.");
+      return;
     }
 
     if (!agree) {
-        alert("Please agree to the Terms and Privacy Policy.");
-        return;
+      setError("Please agree to the Terms and Privacy Policy.");
+      return;
     }
 
-    navigate("/");
-    };
+    const result = register({ firstName, lastName, email, password });
+
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+
+    navigate(result.user.role === "admin" ? "/admin" : "/", { replace: true });
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center px-3 py-6 sm:px-4 sm:py-8">
@@ -42,6 +53,8 @@ function Register() {
         </p>
 
         <form onSubmit={handleRegister} className="space-y-3.5">
+
+          {error && <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
