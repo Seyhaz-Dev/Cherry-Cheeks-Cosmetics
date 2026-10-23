@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import SearchBar from '../components/SearchBar'
 import ProductCard from '../components/ProductCard'
@@ -88,7 +89,7 @@ const products = [
   },
 ]
 
-const itemsPerPage = 8
+const itemsPerPage = 4
 
 function Shop() {
   const [currentPage, setCurrentPage] = useState(1)
@@ -98,7 +99,7 @@ function Shop() {
   const visibleProducts = products.slice(startIndex, startIndex + itemsPerPage)
 
   return (
-    <section className="px-4 py-6 text-[var(--color-text)] sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+    <section className="px-4 py-6 text-[var(--color-text)]  bg-[#fbf8f5] sm:px-6 sm:py-8 lg:px-8 lg:py-10">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6">
           <SearchBar />
@@ -107,35 +108,44 @@ function Shop() {
         <div className="mb-12">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visibleProducts.map((product, index) => (
-              <ProductCard key={index} id={startIndex + index + 1} image={product.image} category={product.category} name={product.name} price={product.price} rating={product.rating} reviews={product.reviews}/>
+              <ProductCard key={product.name} id={startIndex + index + 1} image={product.image} category={product.category} name={product.name} price={product.price} rating={product.rating} reviews={product.reviews}/>
             ))}
           </div>
         </div>
 
-        <div className="mb-12 flex items-center justify-center gap-3">
-          <button type="button" className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#e2d8dd] bg-white text-lg text-[#4a001f] transition hover:border-[#d3b5c4]" aria-label="Previous page" >
-            {'<'}
-          </button>
-
-          <button type="button" className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--color-pink-text)] bg-[var(--color-pink-text)] text-sm font-semibold text-[var(--color-white-text)]" >
-            1
-          </button>
-
+        <nav className="mb-12 flex items-center justify-center gap-3" aria-label="Product pages">
           <button
             type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#e2d8dd] bg-white text-sm font-semibold text-[#4a001f] transition hover:border-[#d3b5c4]"
+            onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+            disabled={currentPage === 1}
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#e2d8dd] bg-white text-[#4a001f] transition hover:border-[#d3b5c4] disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label="Previous page"
           >
-            2
+            <ChevronLeft size={18} aria-hidden="true" />
           </button>
+
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+            <button
+              key={page}
+              type="button"
+              onClick={() => setCurrentPage(page)}
+              aria-current={currentPage === page ? 'page' : undefined}
+              className={`flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-semibold transition ${currentPage === page ? 'border-[var(--color-pink-text)] bg-[var(--color-pink-text)] text-[var(--color-white-text)]' : 'border-[#e2d8dd] bg-white text-[#4a001f] hover:border-[#d3b5c4]'}`}
+            >
+              {page}
+            </button>
+          ))}
 
           <button
             type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#e2d8dd] bg-white text-lg text-[#4a001f] transition hover:border-[#d3b5c4]"
+            onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+            disabled={currentPage === totalPages}
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#e2d8dd] bg-white text-[#4a001f] transition hover:border-[#d3b5c4] disabled:cursor-not-allowed disabled:opacity-40"
             aria-label="Next page"
           >
-            {'>'}
+            <ChevronRight size={18} aria-hidden="true" />
           </button>
-        </div>
+        </nav>
 
         <div className="relative mx-auto my-12 overflow-hidden rounded-3xl">
           <img src={shopBanner} alt="Makeup products arranged on a pale pink background" className="h-38 w-full object-cover sm:h-64 md:h-70 lg:h-76" />
