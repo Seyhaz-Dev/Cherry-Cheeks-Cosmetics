@@ -11,10 +11,7 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import Shop from './pages/Shop'
 import Cart from './pages/Cart'
-
-
 import Checkout from './pages/Checkout'
-
 import Categories from './pages/Categories'
 import ProductDetail from './pages/ProductDetail'
 import OrderConfirmation from './pages/OrderConfirmation'
@@ -51,8 +48,6 @@ function EntryRoute() {
 
   return <Home />
 }
-import OrderConfirmation from './pages/OrderConfirmation'
-import OrderFail from './pages/OrderFail'
 
 function AppLayout() {
   const location = useLocation()
@@ -66,30 +61,22 @@ function AppLayout() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<EntryRoute />} />
-          <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/cart" element={<Cart />} />
-
-
-      
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/orderComfirm" element={<OrderConfirmation/>}/>
-
-
+          <Route path="/orderComfirm" element={<OrderConfirmation />} />
           <Route path="/categories" element={<Categories />} />
-          
           <Route path="/productDetail" element={<ProductDetail />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
 
-
           <Route path="/admin" element={<AdminRoute />}>
             <Route index element={<Dashboard />} />
             <Route path="products" element={<ProductManagement />} />
-            
           </Route>
+          
           <Route path="/orderFail" element={<OrderFail />} />
         </Routes>
       </main>
