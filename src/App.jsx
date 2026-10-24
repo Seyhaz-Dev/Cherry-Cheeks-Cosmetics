@@ -23,7 +23,6 @@ import Login from './pages/auth/Login'
 import Dashboard from './pages/admin/Dashboard'
 import ProductManagement from './pages/admin/ProductManagement'
 
-
 function AdminRoute() {
 const { user } = useAuth()
 
