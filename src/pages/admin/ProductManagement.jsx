@@ -1,9 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AlertTriangle, Database, MoreHorizontal, Package, PackageX, Pencil, Plus, Search, Trash2 } from 'lucide-react'
-
-// The starting list of products, from src/data/products.js
-// We rename it to "initialProducts" because we use the name "products" below for the LIVE list.
-import { products as initialProducts } from '../../data/products'
 
 // Turns a stock number into a status word.
 //   0 units      -> 'out'
@@ -27,7 +23,7 @@ const STATUS = {
 const CATEGORIES = ['Skincare', 'Lips', 'Face', 'Eyes', 'Cheeks']
 
 // What the form looks like when it is empty. Used to reset the form.
-const EMPTY_FORM = { name: '', type: '', category: 'Skincare', price: '', stock: '' }
+const EMPTY_FORM = { name: '', type: '', category: 'Skincare', price: '', stock: '', image: '' }
 
 // One style shared by all the form inputs (so we don't repeat it 5 times)
 const inputClass = 'mt-1 w-full rounded-md border border-[#e6d3dc] px-3 py-2 text-sm outline-none focus:border-[#e0568a]'
@@ -48,11 +44,33 @@ function StatCard({ label, value, icon: Icon, color }) {
 	)
 }
 
-
 function ProductManagement() {
 
 	// The live list of products. Create, Edit and Delete all change this one.
-	const [products, setProducts] = useState(initialProducts)
+	const [products, setProducts] = useState([])
+
+	// NEW: true while the file is still loading
+	const [loading, setLoading] = useState(true)
+
+	// NEW: a message if the file could not be loaded
+	const [loadError, setLoadError] = useState('')
+
+	// NEW: useEffect runs ONE time, when the page opens (that is what the [] at the end means)
+	useEffect(() => {
+		fetch('/data/products.json')            // ask the server for the file
+			.then((res) => {
+				if (!res.ok) throw new Error('File not found')   // the file is missing
+				return res.json()               // turn the file text into a JavaScript list
+			})
+			.then((data) => {
+				setProducts(data)               // put the list in the page's memory
+				setLoading(false)               // stop showing "Loading..."
+			})
+			.catch(() => {
+				setLoadError('Could not load the products. Check public/data/products.json')
+				setLoading(false)
+			})
+	}, [])
 
 	// Toolbar: the text in the search box, and the chosen status filter
 	const [search, setSearch] = useState('')
@@ -86,6 +104,18 @@ function ProductManagement() {
 		setForm({ ...form, [e.target.name]: e.target.value })
 	}
 
+	// Runs when you choose a picture file
+	const handleImage = (e) => {
+		const file = e.target.files[0]      // the file the person chose
+		if (!file) return                   // nothing chosen, stop
+
+		const reader = new FileReader()     // a tool that reads files
+		reader.onload = () => {
+			setForm((oldForm) => ({ ...oldForm, image: reader.result }))   // save the picture (as text) in the form
+		}
+		reader.readAsDataURL(file)          // start reading
+	}
+
 	// ADD: open the popup EMPTY (add mode)
 	const openAddForm = () => {
 		setEditingId(null)
@@ -102,7 +132,8 @@ function ProductManagement() {
 			type: p.type,
 			category: p.category,
 			price: String(p.price),
-			stock: String(p.stock)
+			stock: String(p.stock),
+			image: p.image
 		})
 		setShowForm(true)
 	}
@@ -131,7 +162,8 @@ function ProductManagement() {
 			type: form.type.trim(),
 			category: form.category,
 			price: Number(form.price),
-			stock: Number(form.stock)
+			stock: Number(form.stock),
+			image: form.image
 		}
 
 		// Step 3: edit or add?
@@ -164,7 +196,6 @@ function ProductManagement() {
 	return (
 		<div className="space-y-4 sm:space-y-5">
 
-			{/* ===== 1. THE FOUR STAT CARDS ===== */}
 			<div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
 				<StatCard label="Total Products" value={products.length} icon={Package} color="bg-[#fde0ec] text-[#e0568a]" />
 				<StatCard label="In Stock" value={inStock} icon={Database} color="bg-[#c9f5d8] text-[#1f9d55]" />
@@ -172,10 +203,8 @@ function ProductManagement() {
 				<StatCard label="Out of Stock" value={outOfStock} icon={PackageX} color="bg-[#e8d5fa] text-[#8f46d8]" />
 			</div>
 
-			{/* ===== 2. THE WHITE TABLE CARD ===== */}
 			<section className="rounded-xl bg-white p-4 sm:p-6">
 
-				{/* Title + Add Product button */}
 				<div className="flex items-start justify-between gap-3">
 					<div>
 						<h2 className="text-lg font-semibold">Products</h2>
@@ -257,19 +286,14 @@ function ProductManagement() {
 										<td className="hidden px-4 py-3 md:table-cell">${p.price}</td>
 										<td className="whitespace-nowrap px-4 py-3">{p.stock} units</td>
 
-										{/* The coloured status pill */}
 										<td className="hidden px-4 py-3 sm:table-cell">
 											<span className={`rounded-full px-3 py-1 text-xs font-semibold ${status.className}`}>{status.label}</span>
 										</td>
 
-										{/* The three action buttons. Each one remembers THIS product (p). */}
 										<td className="py-3 pl-4">
 											<div className="flex items-center gap-1 text-[#e0568a]">
-												{/* Pencil = EDIT: open the form filled with this product */}
 												<button type="button" aria-label="Edit" onClick={() => openEditForm(p)} className="rounded-md p-2 hover:bg-[#fff0f6]"><Pencil size={15} /></button>
-												{/* Trash = DELETE: remember this product, which opens the confirm popup */}
 												<button type="button" aria-label="Delete" onClick={() => setProductToDelete(p)} className="rounded-md p-2 hover:bg-[#fff0f6]"><Trash2 size={15} /></button>
-												{/* "..." = VIEW: remember this product, which opens the details popup */}
 												<button type="button" aria-label="View details" onClick={() => setProductToView(p)} className="rounded-md p-2 hover:bg-[#fff0f6]"><MoreHorizontal size={16} /></button>
 											</div>
 										</td>
@@ -279,19 +303,24 @@ function ProductManagement() {
 						</tbody>
 					</table>
 
-					{/* Message when search/filter finds nothing */}
-					{visibleProducts.length === 0 && (
+					{/* NEW: shown while the JSON file is loading */}
+					{loading && (
+						<p className="py-10 text-center text-sm text-[#82757b]">Loading products...</p>
+					)}
+
+					{/* NEW: shown if the JSON file could not be loaded */}
+					{loadError && (
+						<p className="py-10 text-center text-sm text-[#a9365b]">{loadError}</p>
+					)}
+
+					{/* CHANGED: only when loading is finished and there is no error */}
+					{!loading && !loadError && visibleProducts.length === 0 && (
 						<p className="py-10 text-center text-sm text-[#82757b]">No products found.</p>
 					)}
 				</div>
 			</section>
 
-
-			{/* ===== 3. POPUPS =====
-			    {something && ( ... )} means: draw this ONLY when "something" has a value.
-			    So each popup stays hidden until its state is set. */}
-
-			{/* ----- ADD / EDIT popup (shows when showForm is true) ----- */}
+			{/*EDIT popup (shows when showForm is true) */}
 			{showForm && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
 					<div className="max-h-full w-full max-w-md overflow-y-auto rounded-xl bg-white p-6">
@@ -329,6 +358,18 @@ function ProductManagement() {
 									<input name="stock" type="number" min="0" step="1" value={form.stock} onChange={handleChange} className={inputClass} />
 								</label>
 							</div>
+
+							<label className="block text-sm font-medium text-[#5f5359]">
+								Picture
+								<div className="mt-1 flex items-center gap-3">
+									{form.image ? (
+										<img src={form.image} alt="Preview" className="size-14 rounded-lg object-cover" />
+									) : (
+										<span className="size-14 rounded-lg bg-[#fbe3ee]" />
+									)}
+									<input type="file" accept="image/*" onChange={handleImage} className="text-sm" />
+								</div>
+							</label>
 						</div>
 
 						{/* Red error message. Shows only when formError is not empty. */}
@@ -393,7 +434,7 @@ function ProductManagement() {
 						{/* List of details. "|| '—'" shows a dash when the value is empty. */}
 						<dl className="mt-5 divide-y divide-[#f0e3e9] text-sm">
 							<div className="flex justify-between py-2.5">
-								<dt className="text-[#82757b]">Category</dt> 
+								<dt className="text-[#82757b]">Category</dt>
 								<dd className="font-medium">{productToView.category}</dd>
 							</div>
 							<div className="flex justify-between py-2.5">
@@ -415,8 +456,7 @@ function ProductManagement() {
 								Close
 							</button>
 
-							{/* Edit: open the edit form for this product AND close this popup */}
-							<button type="button" onClick={() => {openEditForm(productToView); setProductToView(null)}} className="rounded-full bg-[#e0568a] px-5 py-2 text-sm font-medium text-white hover:bg-[#cc4a7b]">
+							<button type="button" onClick={() => { openEditForm(productToView); setProductToView(null) }} className="rounded-full bg-[#e0568a] px-5 py-2 text-sm font-medium text-white hover:bg-[#cc4a7b]">
 								Edit
 							</button>
 						</div>

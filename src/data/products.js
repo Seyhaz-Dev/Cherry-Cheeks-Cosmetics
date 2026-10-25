@@ -1,6 +1,34 @@
-export const products = [
-	{ id: 1, name: 'Dewdrop Renewal Serum', type: 'Serum', category: 'Skincare', price: 68, stock: 54, image: '' },
-	{ id: 2, name: 'Cherry Tint Lip Gloss', type: 'Gloss', category: 'Lips', price: 12.5, stock: 40, image: '' },
-	{ id: 3, name: 'Peach Cheek Blush', type: 'Blush', category: 'Cheeks', price: 15, stock: 8, image: '' },
-	{ id: 4, name: 'Velvet Matte Foundation', type: 'Foundation', category: 'Face', price: 32, stock: 0, image: '' }
+[
+	{ "id": 1, "name": 
+       "Glow Serum", 
+       "type": "Serum", 
+       "category": 
+       "Skincare", 
+       "price": 68, 
+       "stock": 54, 
+       "image": "/assets/glow-serum.png" },
+
+	{ "id": 2, "name": 
+      "Dewy Moisturizer", 
+      "type": "Cream", 
+      "category": "Skincare", 
+      "price": 32, 
+      "stock": 40, 
+      "image": "/assets/Dewy.png" },
+
+	{ "id": 3, "name": 
+        "Peony Toner", 
+        "type": "Toner", 
+        "category": "Skincare", 
+        "price": 24, 
+        "stock": 8, 
+        "image": "/assets/peony-toner.png" },
+
+	{ "id": 4, "name": 
+      "Night Cream", 
+      "type": "Cream", 
+      "category": "Skincare", 
+      "price": 45, 
+      "stock": 0, 
+      "image": "/assets/night-cream.png" }
 ]
