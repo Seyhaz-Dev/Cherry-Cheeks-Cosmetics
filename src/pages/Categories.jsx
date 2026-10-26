@@ -6,7 +6,7 @@ import { filterProducts, products, sortProducts } from "../data/products";
 import categoryImage from "../assets/category1.png";
 
 // How many products show on one page (use 4 when you have more products)
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 8;
 
 export default function Categories() {
 
