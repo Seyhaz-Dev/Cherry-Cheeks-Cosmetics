@@ -83,6 +83,7 @@ return (
 <Route path="/contact" element={<Contact />} />
 <Route path="/shop" element={<Shop />} />
 <Route path="/cart" element={<Cart />} />
+<Route path="/profile" element={<ProFile />} />
 <Route path="/checkout" element={<Checkout />} />
 <Route path="/orderComfirm" element={<OrderConfirmation />} />
 <Route path="/categories" element={<Categories />} />
