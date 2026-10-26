@@ -40,7 +40,7 @@ function Header() {
   };
 
   return (
-      <header className="fixed left-0 right-0 top-0 z-50 bg-[var(--color-header-footer)] shadow-sm">
+      <header className="sticky top-0 z-50 bg-[var(--color-header-footer)] shadow-sm">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
           
           <div>
@@ -99,7 +99,7 @@ function Header() {
                 aria-label="Sign in"
                 className="hidden h-10 w-10 items-center justify-center text-[var(--color-text)] transition hover:text-pink-600 md:inline-flex"
               >
-                <FontAwesomeIcon icon={faUser} />
+                <FontAwesomeIcon icon={faUser} className="text-lg" />
               </Link>
             )}
 
