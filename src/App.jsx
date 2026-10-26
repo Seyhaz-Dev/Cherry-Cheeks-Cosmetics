@@ -18,6 +18,7 @@ import Register from './pages/auth/Register'
 import Login from './pages/auth/Login'
 import OrderConfirmation from './pages/OrderConfirmation'
 import OrderFail from './pages/OrderFail'
+import ProFile from './pages/ProFile'
 
 function AppLayout() {
   const location = useLocation()
@@ -46,6 +47,7 @@ function AppLayout() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/orderFail" element={<OrderFail />} />
+          <Route path='profile' element={<ProFile/>}/>
         </Routes>
       </main>
 
