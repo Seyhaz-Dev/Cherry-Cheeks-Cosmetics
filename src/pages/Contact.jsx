@@ -15,17 +15,17 @@ function Contact() {
     }
 
     return (
-        <main className="bg-[#fbf8f5] px-5 pb-20 pt-28 font-['Outfit',sans-serif] text-[#292524] sm:px-8 sm:pt-20">
+        <main className="bg-[#fbf8f5] px-5 pb-20 pt-10 font-['Outfit',sans-serif] text-[#292524] sm:px-8 sm:pt-10">
             <div className="mx-auto max-w-6xl">
 
-                <div className="mx-auto mb-12 max-w-2xl text-center">
+                <div className="mx-auto mb-9 max-w-2xl text-center">
                     <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#89565a] sm:text-sm">
                         Cherry Cheeks customer care
                     </p>
-                    <h1 className="mt-3 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+                    <h1 className="mt-1 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
                         Let’s talk <span className="text-[#e94f7d]">skincare</span>
                     </h1>
-                    <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[#817874] sm:text-base">
+                    <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-[#817874] sm:text-base">
                         Questions about your routine, an order, or one of our products? Send us a note and we’ll be glad to help.
                     </p>
                 </div>
