@@ -16,6 +16,7 @@ import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import Categories from './pages/Categories'
 import ProductDetail from './pages/ProductDetail'
+import SearchResults from './pages/SearchResults'
 import OrderConfirmation from './pages/OrderConfirmation'
 import OrderFail from './pages/OrderFail'
 import ProFile from './pages/ProFile'
@@ -87,7 +88,8 @@ return (
 <Route path="/checkout" element={<Checkout />} />
 <Route path="/orderComfirm" element={<OrderConfirmation />} />
 <Route path="/categories" element={<Categories />} />
-<Route path="/productDetail" element={<ProductDetail />} />
+        <Route path="/productDetail" element={<ProductDetail />} />
+        <Route path="/search" element={<SearchResults />} />
 <Route path="/profile" element={<Profile />} />
 <Route path="/register" element={<Register />} />
 <Route path="/login" element={<Login />} />

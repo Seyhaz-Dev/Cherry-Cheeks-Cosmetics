@@ -3,116 +3,69 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import SearchBar from '../components/SearchBar'
 import ProductCard from '../components/ProductCard'
+import { filterProducts, products, sortProducts } from '../data/products'
 
 import shopBanner from '../assets/herobanner.png'
-import productImage from '../assets/productcard1.png'
-import moonwaterImage from '../assets/moonwater.png'
-import nightCreamImage from '../assets/night-cream.png'
-import tonerImage from '../assets/peony-toner.png'
-import moistureImage from '../assets/moisture-essence.png'
-import serumImage from '../assets/glow-serum.png'
-import creamImage from '../assets/cream-balm.png'
-import cleanserImage from '../assets/cleanser.png'
-
-const products = [
-  {
-    name: 'Dewdrop Renewal Serum',
-    category: 'FACE SERUM',
-    description: 'Hydrate, nourish & reveal your natural glow.',
-    price: 68,
-    rating: 4.9,
-    reviews: 218,
-    image: productImage,
-  },
-  {
-    name: 'Moonwater Essence',
-    category: 'ESSENCE',
-    description: 'Refresh and hydrate for a soft, dewy look.',
-    price: 35,
-    rating: 4.8,
-    reviews: 156,
-    image: moonwaterImage,
-  },
-  {
-    name: 'Camellia Night Cream',
-    category: 'NIGHT CREAM',
-    description: 'A comforting cream for your evening ritual.',
-    price: 54,
-    rating: 4.7,
-    reviews: 124,
-    image: nightCreamImage,
-  },
-  {
-    name: 'Peony Glow Toner',
-    category: 'FACE TONER',
-    description: 'A refreshing step for smooth-looking skin.',
-    price: 29,
-    rating: 4.9,
-    reviews: 189,
-    image: tonerImage,
-  },
-  {
-    name: 'Moisture Essence',
-    category: 'ESSENCE',
-    description: 'A lightweight essence for lasting hydration.',
-    price: 42,
-    rating: 4.6,
-    reviews: 98,
-    image: moistureImage,
-  },
-  {
-    name: 'Glow Serum',
-    category: 'FACE SERUM',
-    description: 'Brighten and revitalize your skin.',
-    price: 75,
-    rating: 4.8,
-    reviews: 134,
-    image: serumImage,
-  },
-  {
-    name: 'Cream Balm',
-    category: 'BALM',
-    description: 'A soothing balm for dry areas.',
-    price: 38,
-    rating: 4.5,
-    reviews: 76,
-    image: creamImage,
-  },
-  {
-    name: 'Gentle Cleanser',
-    category: 'CLEANSER',
-    description: 'A gentle cleanser for all skin types.',
-    price: 32,
-    rating: 4.7,
-    reviews: 112,
-    image: cleanserImage,
-  },
-]
 
 const itemsPerPage = 8
 
 function Shop() {
   const [currentPage, setCurrentPage] = useState(1)
+  const [query, setQuery] = useState('')
+  const [filter, setFilter] = useState('All Product')
+  const [sort, setSort] = useState('Sort: Featured')
 
-  const totalPages = Math.ceil(products.length / itemsPerPage)
+  const matchingProducts = sortProducts(
+    filterProducts(products, { query, category: filter }),
+    sort,
+  )
+
+  const totalPages = Math.max(1, Math.ceil(matchingProducts.length / itemsPerPage))
   const startIndex = (currentPage - 1) * itemsPerPage
-  const visibleProducts = products.slice(startIndex, startIndex + itemsPerPage)
+  const visibleProducts = matchingProducts.slice(startIndex, startIndex + itemsPerPage)
+
+  const handleQueryChange = (value) => {
+    setQuery(value)
+    setCurrentPage(1)
+  }
+
+  const handleFilterChange = (value) => {
+    setFilter(value)
+    setCurrentPage(1)
+  }
+
+  const handleSortChange = (value) => {
+    setSort(value)
+    setCurrentPage(1)
+  }
 
   return (
     <section className="px-4 py-6 text-[var(--color-text)]  bg-[#fbf8f5] sm:px-6 sm:py-8 lg:px-8 lg:py-10">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6">
-          <SearchBar />
+          <SearchBar
+            onQueryChange={handleQueryChange}
+            onFilterChange={handleFilterChange}
+            onSortChange={handleSortChange}
+          />
         </div>
 
         <div className="mb-12">
-          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
-            {visibleProducts.map((product, index) => (
-              <ProductCard key={product.name} id={startIndex + index + 1} image={product.image} category={product.category} name={product.name} price={product.price} rating={product.rating} reviews={product.reviews}/>
-            ))}
-          </div>
+          {visibleProducts.length > 0 ? (
+            <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+              {visibleProducts.map((product) => (
+                <ProductCard key={product.id} id={product.id} image={product.image} category={product.type} name={product.name} price={product.price} rating={product.rating} reviews={product.reviews}/>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-[#eee4df] bg-white px-6 py-16 text-center">
+              <p className="text-lg font-semibold">No products found</p>
+              <p className="mt-2 text-sm text-[#817874]">Try a different keyword or category.</p>
+            </div>
+          )}
         </div>
 
+        {matchingProducts.length > 0 && (
         <nav className="mb-12 flex items-center justify-center gap-3" aria-label="Product pages">
           <button
             type="button"
@@ -146,6 +99,7 @@ function Shop() {
             <ChevronRight size={18} aria-hidden="true" />
           </button>
         </nav>
+        )}
 
         <div className="relative mx-auto my-12 overflow-hidden rounded-3xl">
           <img src={shopBanner} alt="Makeup products arranged on a pale pink background" className="h-38 w-full object-cover sm:h-64 md:h-70 lg:h-76" />
