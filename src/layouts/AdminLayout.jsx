@@ -481,7 +481,7 @@ function AdminLayout() {
                     {fullName}
                   </p>
                   <p className="mt-1 text-xs capitalize text-[#82757b]">
-                    {user?.role || 'admin'} account
+                    {user?.role || 'admin'}
                   </p>
                 </div>
               </div>
@@ -528,15 +528,6 @@ function AdminLayout() {
             </NavLink>
           ))}
 
-          {/* VIEW STOREFRONT BUTTON */}
-          <Link
-            to="/shop"
-            className="mt-4 flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#e7567e] px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#cc4169]"
-          >
-            <FontAwesomeIcon icon={faBagShopping} />
-            View Storefront
-            <ArrowUpRight size={15} />
-          </Link>
         </nav>
 
         <div className="border-t border-[#f0e3e9] p-4">
@@ -596,16 +587,6 @@ function AdminLayout() {
                 <UserRound size={20} strokeWidth={1.8} />
               </div>
 
-              <div className="max-w-40">
-                <p className="truncate text-sm font-semibold text-[#30252a]">
-                  {fullName}
-                </p>
-
-                <p className="flex items-center gap-1 text-xs capitalize text-[#82757b]">
-                  <span className="size-1.5 rounded-full bg-green-500" />
-                  {user?.role || 'admin'} account
-                </p>
-              </div>
             </Link>
           </div>
         </header>
