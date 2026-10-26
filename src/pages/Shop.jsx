@@ -89,7 +89,7 @@ const products = [
   },
 ]
 
-const itemsPerPage = 4
+const itemsPerPage = 8
 
 function Shop() {
   const [currentPage, setCurrentPage] = useState(1)
@@ -106,7 +106,7 @@ function Shop() {
         </div>
 
         <div className="mb-12">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
             {visibleProducts.map((product, index) => (
               <ProductCard key={product.name} id={startIndex + index + 1} image={product.image} category={product.category} name={product.name} price={product.price} rating={product.rating} reviews={product.reviews}/>
             ))}
