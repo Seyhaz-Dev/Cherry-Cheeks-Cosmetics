@@ -1,8 +1,400 @@
-import { ShoppingCart, Package, TrendingUp, Users } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { AlertTriangle, CheckCircle2, Clock, Database, MoreHorizontal, Package, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 
+// Map order status to color pill styling
+const STATUS = {
+  Processing: { label: 'Processing', className: 'bg-[#dbeafe] text-[#1e40af]' },
+  Pending: { label: 'Pending', className: 'bg-[#fde8b5] text-[#8a5a00]' },
+  Completed: { label: 'Completed', className: 'bg-[#b9f3c9] text-[#1f6b3a]' },
+}
+
+// Initial fallback mock data
+const INITIAL_ORDERS = [
+  { id: 'LB-101', customer: 'Olivia Bennett', date: 'Oct 05, 2026', items: '3 Items', total: 128.4, payment: 'Paid', status: 'Processing' },
+  { id: 'LB-102', customer: 'Ethan Reynolds', date: 'Oct 06, 2026', items: '1 Item', total: 45.0, payment: 'Paid', status: 'Pending' },
+  { id: 'LB-103', customer: 'Sophia Martinez', date: 'Oct 06, 2026', items: '5 Items', total: 310.2, payment: 'Paid', status: 'Completed' },
+  { id: 'LB-104', customer: 'Liam Johnson', date: 'Oct 07, 2026', items: '2 Items', total: 89.99, payment: 'Unpaid', status: 'Pending' },
+  { id: 'LB-105', customer: 'Ava White', date: 'Oct 08, 2026', items: '4 Items', total: 210.5, payment: 'Paid', status: 'Processing' },
+]
+
+// Empty form template for reset/creation
+const EMPTY_FORM = { customer: '', items: '1 Item', total: '', payment: 'Paid', status: 'Pending' }
+
+// Standardized input style matching ProductManagement
+const inputClass = 'mt-1 w-full rounded-md border border-[#e6d3dc] px-3 py-2 text-sm outline-none focus:border-[#e0568a]'
+
+// Reusable Stat Card matching ProductManagement design
+function StatCard({ label, value, icon: Icon, color }) {
+  return (
+    <div className="rounded-xl bg-white p-4 sm:p-5 shadow-sm">
+      <div className="flex items-start justify-between">
+        <p className="text-sm text-[#5f5359]">{label}</p>
+        <span className={`flex size-9 items-center justify-center rounded-lg ${color}`}>
+          <Icon size={18} />
+        </span>
+      </div>
+      <p className="mt-3 text-2xl font-semibold text-slate-900">{value}</p>
+    </div>
+  )
+}
 
 export default function OrderManagement() {
+  // Orders list state
+  const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
+
+  // Search & Filter state
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
+
+  // Modals & Action target states
+  const [orderToDelete, setOrderToDelete] = useState(null)
+  const [orderToView, setOrderToView] = useState(null)
+  const [showForm, setShowForm] = useState(false)
+  const [editingId, setEditingId] = useState(null)
+  const [form, setForm] = useState(EMPTY_FORM)
+  const [formError, setFormError] = useState('')
+
+  // Fetch initial orders or fallback to default array
+  useEffect(() => {
+    fetch('/data/orders.json')
+      .then((res) => {
+        if (!res.ok) throw new Error('File not found')
+        return res.json()
+      })
+      .then((data) => {
+        setOrders(data)
+        setLoading(false)
+      })
+      .catch(() => {
+        // Fallback to local array if json is not placed in public folder
+        setOrders(INITIAL_ORDERS)
+        setLoading(false)
+      })
+  }, [])
+
+  // Stat computations
+  const totalOrders = orders.length
+  const pendingOrders = orders.filter((o) => o.status === 'Pending').length
+  const processingOrders = orders.filter((o) => o.status === 'Processing').length
+  const completedOrders = orders.filter((o) => o.status === 'Completed').length
+
+  // Filtered orders list based on search term & status filter
+  const visibleOrders = orders.filter((o) => {
+    const matchesSearch =
+      o.id.toLowerCase().includes(search.toLowerCase()) ||
+      o.customer.toLowerCase().includes(search.toLowerCase())
+    const matchesStatus = statusFilter === 'all' || o.status === statusFilter
+    return matchesSearch && matchesStatus
+  })
+
+  // Handlers for Form & Actions
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  const openAddForm = () => {
+    setEditingId(null)
+    setForm(EMPTY_FORM)
+    setFormError('')
+    setShowForm(true)
+  }
+
+  const openEditForm = (o) => {
+    setEditingId(o.id)
+    setForm({
+      customer: o.customer,
+      items: o.items,
+      total: String(o.total),
+      payment: o.payment,
+      status: o.status,
+    })
+    setFormError('')
+    setShowForm(true)
+  }
+
+  const closeForm = () => {
+    setShowForm(false)
+    setForm(EMPTY_FORM)
+    setFormError('')
+    setEditingId(null)
+  }
+
+  const handleSave = () => {
+    if (!form.customer.trim()) return setFormError('Please enter a customer name.')
+    if (form.total === '' || Number(form.total) <= 0) return setFormError('Please enter a valid total amount.')
+
+    const values = {
+      customer: form.customer.trim(),
+      items: form.items.trim() || '1 Item',
+      total: Number(form.total),
+      payment: form.payment,
+      status: form.status,
+    }
+
+    if (editingId) {
+      setOrders(orders.map((o) => (o.id === editingId ? { ...o, ...values } : o)))
+    } else {
+      const newOrder = {
+        id: `#LB-${Math.floor(100 + Math.random() * 900)}`,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+        ...values,
+      }
+      setOrders([newOrder, ...orders])
+    }
+
+    closeForm()
+  }
+
+  const confirmDelete = () => {
+    setOrders(orders.filter((o) => o.id !== orderToDelete.id))
+    setOrderToDelete(null)
+  }
+
   return (
-    <h1>Order Management</h1>
+    <div className="space-y-4 sm:space-y-5 font-sans text-slate-700">
+      {/* Dynamic Stat Cards */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <StatCard label="Total Orders" value={totalOrders} icon={Package} color="bg-[#fde0ec] text-[#e0568a]" />
+        <StatCard label="Pending" value={pendingOrders} icon={Clock} color="bg-[#fdebc0] text-[#d98a00]" />
+        <StatCard label="Processing" value={processingOrders} icon={Database} color="bg-[#dbeafe] text-[#1e40af]" />
+        <StatCard label="Completed" value={completedOrders} icon={CheckCircle2} color="bg-[#c9f5d8] text-[#1f9d55]" />
+      </div>
+
+      {/* Main Container */}
+      <section className="rounded-xl bg-white p-4 sm:p-6 shadow-sm ring-1 ring-black/5">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold text-slate-900">Orders</h2>
+            <p className="text-sm text-[#82757b]">Total {orders.length} orders</p>
+          </div>
+          <button
+            type="button"
+            onClick={openAddForm}
+            className="flex items-center gap-1.5 rounded-full bg-[#e0568a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#cc4a7b] transition-colors"
+          >
+            <Plus size={16} />
+            New Order
+          </button>
+        </div>
+
+        {/* Toolbar: Search input & Status Dropdown */}
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+          <div className="relative sm:max-w-sm sm:flex-1">
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#82757b]" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by ID or customer..."
+              className="w-full rounded-md border border-[#e6d3dc] py-2 pl-9 pr-3 text-sm outline-none focus:border-[#e0568a]"
+            />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="rounded-md border border-[#e6d3dc] bg-white px-3 py-2 text-sm outline-none focus:border-[#e0568a]"
+          >
+            <option value="all">All statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Processing">Processing</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        {/* Table View */}
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[520px] text-left text-sm">
+            <thead className="text-[#5f5359] border-b border-[#f0e3e9]">
+              <tr>
+                <th className="py-3 pr-4 font-medium">Order ID</th>
+                <th className="px-4 py-3 font-medium">Customer</th>
+                <th className="hidden px-4 py-3 font-medium md:table-cell">Date</th>
+                <th className="hidden px-4 py-3 font-medium sm:table-cell">Items</th>
+                <th className="px-4 py-3 font-medium">Total</th>
+                <th className="hidden px-4 py-3 font-medium md:table-cell">Payment</th>
+                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="py-3 pl-4 font-medium text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {visibleOrders.map((o) => {
+                const statusBadge = STATUS[o.status] || { label: o.status, className: 'bg-gray-100 text-gray-700' }
+
+                return (
+                  <tr key={o.id} className="border-t border-[#f0e3e9] hover:bg-gray-50/50 transition-colors">
+                    <td className="py-3 pr-4 font-semibold text-slate-800">{o.id}</td>
+                    <td className="px-4 py-3 font-medium text-slate-900">{o.customer}</td>
+                    <td className="hidden px-4 py-3 text-[#82757b] md:table-cell">{o.date}</td>
+                    <td className="hidden px-4 py-3 text-[#82757b] sm:table-cell">{o.items}</td>
+                    <td className="px-4 py-3 font-semibold text-slate-900">${Number(o.total).toFixed(2)}</td>
+                    <td className="hidden px-4 py-3 md:table-cell">
+                      <div className="flex items-center gap-1.5">
+                        <span className={`h-1.5 w-1.5 rounded-full ${o.payment === 'Paid' ? 'bg-emerald-500' : 'bg-red-400'}`}></span>
+                        <span className="text-slate-600">{o.payment}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusBadge.className}`}>
+                        {statusBadge.label}
+                      </span>
+                    </td>
+                    <td className="py-3 pl-4 text-right">
+                      <div className="flex items-center justify-end gap-1 text-[#e0568a]">
+                        <button type="button" aria-label="Edit" onClick={() => openEditForm(o)} className="rounded-md p-2 hover:bg-[#fff0f6]">
+                          <Pencil size={15} />
+                        </button>
+                        <button type="button" aria-label="Delete" onClick={() => setOrderToDelete(o)} className="rounded-md p-2 hover:bg-[#fff0f6]">
+                          <Trash2 size={15} />
+                        </button>
+                        <button type="button" aria-label="View details" onClick={() => setOrderToView(o)} className="rounded-md p-2 hover:bg-[#fff0f6]">
+                          <MoreHorizontal size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+
+          {loading && <p className="py-10 text-center text-sm text-[#82757b]">Loading orders...</p>}
+          {loadError && <p className="py-10 text-center text-sm text-[#a9365b]">{loadError}</p>}
+          {!loading && !loadError && visibleOrders.length === 0 && (
+            <p className="py-10 text-center text-sm text-[#82757b]">No orders found.</p>
+          )}
+        </div>
+      </section>
+
+      {/* CREATE / EDIT MODAL */}
+      {showForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="max-h-full w-full max-w-md overflow-y-auto rounded-xl bg-white p-6 shadow-xl">
+            <h2 className="text-lg font-semibold">{editingId ? 'Edit Order' : 'Add Order'}</h2>
+
+            <div className="mt-4 space-y-4">
+              <label className="block text-sm font-medium text-[#5f5359]">
+                Customer Name
+                <input name="customer" value={form.customer} onChange={handleChange} className={inputClass} placeholder="e.g. Olivia Bennett" />
+              </label>
+
+              <div className="grid grid-cols-2 gap-4">
+                <label className="block text-sm font-medium text-[#5f5359]">
+                  Total ($)
+                  <input name="total" type="number" step="0.01" value={form.total} onChange={handleChange} className={inputClass} placeholder="0.00" />
+                </label>
+                <label className="block text-sm font-medium text-[#5f5359]">
+                  Items Count
+                  <input name="items" value={form.items} onChange={handleChange} className={inputClass} placeholder="e.g. 2 Items" />
+                </label>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <label className="block text-sm font-medium text-[#5f5359]">
+                  Status
+                  <select name="status" value={form.status} onChange={handleChange} className={inputClass}>
+                    <option value="Pending">Pending</option>
+                    <option value="Processing">Processing</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </label>
+                <label className="block text-sm font-medium text-[#5f5359]">
+                  Payment Status
+                  <select name="payment" value={form.payment} onChange={handleChange} className={inputClass}>
+                    <option value="Paid">Paid</option>
+                    <option value="Unpaid">Unpaid</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            {formError && <p className="mt-4 text-sm text-[#a9365b]">{formError}</p>}
+
+            <div className="mt-6 flex justify-end gap-2">
+              <button type="button" onClick={closeForm} className="rounded-full px-4 py-2 text-sm text-slate-600 hover:bg-[#f8edf2]">
+                Cancel
+              </button>
+              <button type="button" onClick={handleSave} className="rounded-full bg-[#e0568a] px-5 py-2 text-sm font-medium text-white hover:bg-[#cc4a7b]">
+                {editingId ? 'Save changes' : 'Save order'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE MODAL */}
+      {orderToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl">
+            <h2 className="text-lg font-semibold text-slate-900">Delete order</h2>
+            <p className="mt-2 text-sm text-[#5f5359]">
+              Delete order <strong>{orderToDelete.id}</strong> ({orderToDelete.customer})? This action cannot be undone.
+            </p>
+            <div className="mt-6 flex justify-end gap-2">
+              <button type="button" onClick={() => setOrderToDelete(null)} className="rounded-full px-4 py-2 text-sm text-slate-600 hover:bg-[#f8edf2]">
+                Cancel
+              </button>
+              <button type="button" onClick={confirmDelete} className="rounded-full bg-[#a9365b] px-5 py-2 text-sm font-medium text-white hover:bg-[#8f2b4b]">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* VIEW DETAILS MODAL */}
+      {orderToView && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="max-h-full w-full max-w-md overflow-y-auto rounded-xl bg-white p-6 shadow-xl">
+            <h2 className="text-lg font-semibold text-slate-900">Order Details</h2>
+
+            <div className="mt-4 flex items-center justify-between border-b border-[#f0e3e9] pb-4">
+              <div>
+                <p className="text-xl font-bold text-slate-900">{orderToView.id}</p>
+                <p className="text-sm text-[#82757b]">{orderToView.customer}</p>
+              </div>
+              <span className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS[orderToView.status]?.className}`}>
+                {STATUS[orderToView.status]?.label || orderToView.status}
+              </span>
+            </div>
+
+            <dl className="mt-4 divide-y divide-[#f0e3e9] text-sm">
+              <div className="flex justify-between py-2.5">
+                <dt className="text-[#82757b]">Order Date</dt>
+                <dd className="font-medium">{orderToView.date}</dd>
+              </div>
+              <div className="flex justify-between py-2.5">
+                <dt className="text-[#82757b]">Items</dt>
+                <dd className="font-medium">{orderToView.items}</dd>
+              </div>
+              <div className="flex justify-between py-2.5">
+                <dt className="text-[#82757b]">Payment Status</dt>
+                <dd className="font-medium">{orderToView.payment}</dd>
+              </div>
+              <div className="flex justify-between py-2.5">
+                <dt className="text-[#82757b]">Total Amount</dt>
+                <dd className="font-semibold text-slate-900">${Number(orderToView.total).toFixed(2)}</dd>
+              </div>
+            </dl>
+
+            <div className="mt-6 flex justify-end gap-2">
+              <button type="button" onClick={() => setOrderToView(null)} className="rounded-full px-4 py-2 text-sm text-slate-600 hover:bg-[#f8edf2]">
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  openEditForm(orderToView)
+                  setOrderToView(null)
+                }}
+                className="rounded-full bg-[#e0568a] px-5 py-2 text-sm font-medium text-white hover:bg-[#cc4a7b]"
+              >
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
