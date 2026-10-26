@@ -2,73 +2,55 @@ import { useState } from "react";
 
 import SearchBar from "../components/SearchBar";
 import ProductCard from "../components/ProductCard";
+import { filterProducts, products, sortProducts } from "../data/products";
 import categoryImage from "../assets/category1.png";
-import productImage from "../assets/productcard1.png";
-import moonwaterImage from "../assets/moonwater.png";
-import nightCreamImage from "../assets/night-cream.png";
-import tonerImage from "../assets/peony-toner.png";
 
 // How many products show on one page (use 4 when you have more products)
-const PAGE_SIZE = 4;
-
-const products = [
-  {
-    id: 1,
-    name: "Dewdrop Renewal Serum",
-    category: "FACE SERUM",
-    price: 68,
-    rating: 4.9,
-    reviews: 218,
-    image: productImage,
-  },
-  {
-    id: 2,
-    name: "Moonwater Essence",
-    category: "ESSENCE",
-    price: 35,
-    rating: 4.8,
-    reviews: 156,
-    image: moonwaterImage,
-  },
-  {
-    id: 3,
-    name: "Camellia Night Cream",
-    category: "NIGHT CREAM",
-    price: 54,
-    rating: 4.7,
-    reviews: 124,
-    image: nightCreamImage,
-  },
-  {
-    id: 4,
-    name: "Peony Glow Toner",
-    category: "FACE TONER",
-    price: 29,
-    rating: 4.9,
-    reviews: 189,
-    image: tonerImage,
-  },
-
-
-];
+const PAGE_SIZE = 8;
 
 export default function Categories() {
 
   // The page the person is on (starts at page 1)
   const [page, setPage] = useState(1);
 
-  // How many pages there are in total (Math.ceil rounds up: 4 products / 2 = 2 pages)
-  const totalPages = Math.max(1, Math.ceil(products.length / PAGE_SIZE));
+  // Live search, category filter and sort
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState("All Product");
+  const [sort, setSort] = useState("Sort: Featured");
+
+  // Products that match the search + filter, then sorted
+  const matchingProducts = sortProducts(
+    filterProducts(products, { query, category: filter }),
+    sort,
+  );
+
+  // How many pages there are in total
+  const totalPages = Math.max(1, Math.ceil(matchingProducts.length / PAGE_SIZE));
 
   // Page 1 starts at item 0, page 2 at item 2, page 3 at item 4 ...
   const startIndex = (page - 1) * PAGE_SIZE;
 
   // Only the products for THIS page
-  const visibleProducts = products.slice(startIndex, startIndex + PAGE_SIZE);
+  const visibleProducts = matchingProducts.slice(startIndex, startIndex + PAGE_SIZE);
 
   // For the text "Showing 1–2 of 4"
-  const firstShown = products.length === 0 ? 0 : startIndex + 1;
+  const firstShown = matchingProducts.length === 0 ? 0 : startIndex + 1;
   const lastShown = startIndex + visibleProducts.length;
+
+  const handleQueryChange = (value) => {
+    setQuery(value);
+    setPage(1);
+  };
+
+  const handleFilterChange = (value) => {
+    setFilter(value);
+    setPage(1);
+  };
+
+  const handleSortChange = (value) => {
+    setSort(value);
+    setPage(1);
+  };
 
 
   return (
@@ -104,22 +86,34 @@ export default function Categories() {
         className="mx-auto max-w-7xl scroll-mt-20 px-5 py-12 sm:px-8 md:py-16">
 
         <div className="mb-8 rounded-2xl border border-[#eee4df] bg-white p-3 sm:p-4">
-          <SearchBar />
+          <SearchBar
+            onQueryChange={handleQueryChange}
+            onFilterChange={handleFilterChange}
+            onSortChange={handleSortChange}
+          />
         </div>
 
-        <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-          {visibleProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))}
-        </div>
+        {visibleProducts.length > 0 ? (
+          <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+            {visibleProducts.map((product) => (
+              <ProductCard key={product.id} {...product} category={product.type} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-[#eee4df] bg-white px-6 py-16 text-center">
+            <p className="text-lg font-semibold">No products found</p>
+            <p className="mt-2 text-sm text-[#817874]">Try a different keyword or category.</p>
+          </div>
+        )}
 
         <section>
 
+        {matchingProducts.length > 0 && (
         <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-between gap-4 border-b border-gray-100 px-4 py-4 sm:flex-row sm:px-8">
 
           {/* The text is now real numbers */}
           <p className="text-xs text-[#8b8490] sm:text-sm">
-            Showing {firstShown}–{lastShown} of {products.length}
+            Showing {firstShown}–{lastShown} of {matchingProducts.length}
           </p>
 
           <div className="flex items-center gap-1.5">
@@ -165,6 +159,7 @@ export default function Categories() {
 
           </div>
         </div>
+        )}
 
       </section>
       

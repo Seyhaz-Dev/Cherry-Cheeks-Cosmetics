@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function ProFile() {
   const { user, updateProfile } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("personal");
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
@@ -87,10 +89,10 @@ function ProFile() {
                 onChange={handleImageChange}
               />
               <button
-                onClick={handleSelectImage}
-                className="absolute -bottom-1 -right-3 rounded-full border border-pink-200 bg-white px-4 py-1 text-sm text-[#e8478a]"
+                onClick={handleEditClick}
+                className="absolute -bottom-1 -right-3 rounded-xl bg-[#e8478a] px-4 py-1 text-sm text-white"
               >
-                Edit Profile
+                Edit
               </button>
             </div>
 
@@ -211,7 +213,7 @@ function ProFile() {
                   />
                 </div>
                 <div className="w-full pb-5 flex flex-col">
-                  <label htmlFor="">Profile Picture</label>
+                  <label htmlFor="">Profile Pichture</label>
                   <div className="flex items-center gap-4 mt-2">
                     {avatarSrc ? (
                       <img src={avatarSrc} alt="Preview" className="h-16 w-16 rounded-full object-cover" />
@@ -223,7 +225,7 @@ function ProFile() {
                     <button
                       type="button"
                       onClick={handleSelectImage}
-                      className="rounded-xl border border-gray-300 px-4 py-2 text-gray-700"
+                      className="rounded-xl bg-[#e8478a] px-6 py-2 text-white"
                     >
                       Choose Image
                     </button>
@@ -231,7 +233,14 @@ function ProFile() {
                 </div>
                 {message && <p className="text-green-600 mb-2">{message}</p>}
                 {error && <p className="text-red-600 mb-2">{error}</p>}
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/login")}
+                    className="rounded-xl bg-[#e8478a] px-6 py-2 text-white"
+                  >
+                    Checkout
+                  </button>
                   <button type="submit" className="rounded-xl bg-[#e8478a] px-6 py-2 text-white">
                     Save Changes
                   </button>
