@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import SearchBar from "../components/SearchBar";
 import ProductCard from "../components/ProductCard";
 import categoryImage from "../assets/category1.png";
@@ -6,6 +8,8 @@ import moonwaterImage from "../assets/moonwater.png";
 import nightCreamImage from "../assets/night-cream.png";
 import tonerImage from "../assets/peony-toner.png";
 
+// How many products show on one page (use 4 when you have more products)
+const PAGE_SIZE = 4;
 
 const products = [
   {
@@ -44,9 +48,29 @@ const products = [
     reviews: 189,
     image: tonerImage,
   },
+
+
 ];
 
 export default function Categories() {
+
+  // The page the person is on (starts at page 1)
+  const [page, setPage] = useState(1);
+
+  // How many pages there are in total (Math.ceil rounds up: 4 products / 2 = 2 pages)
+  const totalPages = Math.max(1, Math.ceil(products.length / PAGE_SIZE));
+
+  // Page 1 starts at item 0, page 2 at item 2, page 3 at item 4 ...
+  const startIndex = (page - 1) * PAGE_SIZE;
+
+  // Only the products for THIS page
+  const visibleProducts = products.slice(startIndex, startIndex + PAGE_SIZE);
+
+  // For the text "Showing 1–2 of 4"
+  const firstShown = products.length === 0 ? 0 : startIndex + 1;
+  const lastShown = startIndex + visibleProducts.length;
+
+
   return (
     <main className="overflow-hidden bg-[#fbf8f5] font-['Outfit',sans-serif] text-[#292524]">
       <section className="mx-auto grid max-w-7xl items-center gap-9 px-5 pb-12 pt-10 sm:px-8 md:grid-cols-2 md:gap-14 md:pb-16 md:pt-16">
@@ -84,7 +108,7 @@ export default function Categories() {
         </div>
 
         <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-          {products.map((product) => (
+          {visibleProducts.map((product) => (
             <ProductCard key={product.id} {...product} />
           ))}
         </div>
@@ -93,41 +117,48 @@ export default function Categories() {
 
         <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-between gap-4 border-b border-gray-100 px-4 py-4 sm:flex-row sm:px-8">
 
-
+          {/* The text is now real numbers */}
           <p className="text-xs text-[#8b8490] sm:text-sm">
-            Showing 1–3 of 8,492
+            Showing {firstShown}–{lastShown} of {products.length}
           </p>
-
 
           <div className="flex items-center gap-1.5">
 
+            {/* Previous: go back one page. disabled on page 1. */}
             <button
               type="button"
               aria-label="Previous page"
-              className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#e9e4eb] bg-white text-sm text-[#8b8490] transition hover:border-pink-400"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+              className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#e9e4eb] bg-white text-sm text-[#8b8490] transition hover:border-pink-400 disabled:cursor-not-allowed disabled:opacity-40"
             >
               ‹
             </button>
 
-            <button
-              type="button"
-              aria-current="page"
-              className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#df5685] bg-[#df5685] text-sm text-white"
-            >
-              1
-            </button>
+            {/* One button for each page: 1, 2, 3 ... */}
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+              <button
+                key={number}
+                type="button"
+                onClick={() => setPage(number)}
+                aria-current={number === page ? "page" : undefined}
+                className={`flex h-[30px] w-[30px] items-center justify-center rounded-md border text-sm transition ${
+                  number === page
+                    ? "border-[#df5685] bg-[#df5685] text-white"
+                    : "border-[#e9e4eb] bg-white text-[#8b8490] hover:border-pink-400 hover:text-pink-500"
+                }`}
+              >
+                {number}
+              </button>
+            ))}
 
-            <button
-              type="button"
-              className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#e9e4eb] bg-white text-sm text-[#8b8490] transition hover:border-pink-400 hover:text-pink-500"
-            >
-              2
-            </button>
-
+            {/* Next: go forward one page. disabled on the last page. */}
             <button
               type="button"
               aria-label="Next page"
-              className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#e9e4eb] bg-white text-sm text-[#8b8490] transition hover:border-pink-400"
+              onClick={() => setPage(page + 1)}
+              disabled={page === totalPages}
+              className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#e9e4eb] bg-white text-sm text-[#8b8490] transition hover:border-pink-400 disabled:cursor-not-allowed disabled:opacity-40"
             >
               ›
             </button>
