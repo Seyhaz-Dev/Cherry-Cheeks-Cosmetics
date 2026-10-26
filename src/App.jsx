@@ -18,6 +18,7 @@ import Categories from './pages/Categories'
 import ProductDetail from './pages/ProductDetail'
 import OrderConfirmation from './pages/OrderConfirmation'
 import OrderFail from './pages/OrderFail'
+import ProFile from './pages/ProFile'
 import Register from './pages/auth/Register'
 import Login from './pages/auth/Login'
 import Dashboard from './pages/admin/Dashboard'
@@ -25,6 +26,7 @@ import ProductManagement from './pages/admin/ProductManagement'
 import OrderManagement from './pages/admin/OrderManagement'
 import CustomerManagement from './pages/admin/CustomerManagement'
 import Settings from './pages/admin/Settings'
+
 
 
 function AdminRoute() {
@@ -107,14 +109,14 @@ return (
 
 
 function App() {
-return (
-<BrowserRouter>
-<AuthProvider>
-<CartProvider>
-<AppLayout />
-</CartProvider>
-</AuthProvider>
-</BrowserRouter>
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <CartProvider>
+          <AppLayout />
+        </CartProvider>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
 
