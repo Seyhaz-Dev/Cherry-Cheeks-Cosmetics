@@ -345,16 +345,6 @@ function AdminLayout() {
               )}
             </div>
 
-            {/* Storefront shortcut */}
-            <Link
-              to="/shop"
-              aria-label="View storefront"
-              title="View storefront"
-              className="flex size-10 items-center justify-center rounded-lg text-[#4A001F] transition hover:bg-[#fbe3ee]"
-            >
-              <FontAwesomeIcon icon={faBagShopping} className="text-lg" />
-            </Link>
-
             {/* Profile shortcut */}
             <Link
               to="/admin/settings"
@@ -537,7 +527,7 @@ function AdminLayout() {
 
       {/* MAIN CONTENT */}
       <div className="min-w-0 flex-1">
-        <header className="flex min-h-[76px] items-center justify-between gap-3 border-b border-[#f0e3e9] bg-[#fff9fc] px-4 py-4 sm:px-6 md:px-8">
+        <header className="flex min-h-[76px] items-center justify-between gap-3   px-4 py-4 sm:px-6 md:px-8">
           <div className="min-w-0">
             <h2 className="text-[22px] font-bold leading-tight text-[#4A001F]">
               {title}
@@ -551,21 +541,6 @@ function AdminLayout() {
           <div className="flex shrink-0 items-center gap-2 sm:gap-4">
             {/* DESKTOP NOTIFICATIONS */}
             <div className="relative" ref={notificationRef}>
-              <button
-                type="button"
-                onClick={() => setNotificationOpen((open) => !open)}
-                aria-label="Notifications"
-                aria-expanded={notificationOpen}
-                className="relative flex size-10 items-center justify-center rounded-xl border border-[#f0e3e9] bg-white text-[#4A001F] transition hover:bg-[#fff0f6]"
-              >
-                <Bell size={20} strokeWidth={1.8} />
-
-                {unreadCount > 0 && (
-                  <span className="absolute -right-1 -top-1 flex min-w-4 items-center justify-center rounded-full bg-[#e7567e] px-1 text-[10px] font-semibold leading-4 text-white ring-2 ring-[#fff9fc]">
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
-                )}
-              </button>
 
               {notificationOpen && (
                 <NotificationPanel
