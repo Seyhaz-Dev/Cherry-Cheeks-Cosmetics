@@ -4,8 +4,8 @@ const AuthContext = createContext(null)
 const USERS_KEY = 'cherry-cheeks-demo-users'
 const SESSION_KEY = 'cherry-cheeks-demo-session'
 const DEMO_ADMIN = {
-  email: 'admin@cherrycheeks.com',
-  password: 'admin#123!',
+  email: 'admin@gmail.com',
+  password: 'admin#123',
   firstName: 'Store',
   lastName: 'Admin',
   role: 'admin',
