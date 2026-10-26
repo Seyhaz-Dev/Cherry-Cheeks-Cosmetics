@@ -520,7 +520,7 @@ const desktopNotificationRef = useRef(null)
 
       {/* MAIN CONTENT */}
       <div className="min-w-0 flex-1">
-        <header className="flex min-h-[76px] items-center justify-between gap-3   px-4 py-4 sm:px-6 md:px-8">
+        <header className="flex min-h-[76px] items-center justify-between gap-3 border-b border-[#f0e3e9] px-4 py-4 sm:px-6 md:px-8">
           <div className="min-w-0">
             <h2 className="text-[22px] font-bold leading-tight text-[#4A001F]">
               {title}
