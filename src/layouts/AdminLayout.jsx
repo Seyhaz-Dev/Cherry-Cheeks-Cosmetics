@@ -135,8 +135,7 @@ function AdminProfile({ user, onLogout }) {
         </p>
 
         <p className="mt-1 flex items-center gap-1 text-xs capitalize text-[#82757b]">
-          <span className="size-1.5 rounded-full bg-green-500" />
-          {user?.role || 'admin'} account
+          {user?.role || 'admin'} 
         </p>
       </div>
 
@@ -253,6 +252,7 @@ function AdminLayout() {
   )
 
   const notificationRef = useRef(null)
+const desktopNotificationRef = useRef(null)
 
   const unreadCount = notifications.filter(
     (notification) => !notification.read
@@ -270,10 +270,10 @@ function AdminLayout() {
   // Close the notification dropdown when clicking outside it
   useEffect(() => {
     function handleOutsideClick(event) {
-      if (
-        notificationRef.current &&
-        !notificationRef.current.contains(event.target)
-      ) {
+      const insideMobile = notificationRef.current?.contains(event.target)
+      const insideDesktop = desktopNotificationRef.current?.contains(event.target)
+
+      if (!insideMobile && !insideDesktop) {
         setNotificationOpen(false)
       }
     }
@@ -335,14 +335,7 @@ function AdminLayout() {
                 )}
               </button>
 
-              {notificationOpen && (
-                <NotificationPanel
-                  notifications={notifications}
-                  unreadCount={unreadCount}
-                  onMarkAllRead={handleMarkAllRead}
-                  onClose={() => setNotificationOpen(false)}
-                />
-              )}
+              
             </div>
 
             {/* Profile shortcut */}
@@ -540,7 +533,23 @@ function AdminLayout() {
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-4">
             {/* DESKTOP NOTIFICATIONS */}
-            <div className="relative" ref={notificationRef}>
+            <div className="relative hidden md:block" ref={desktopNotificationRef}>
+
+              {/* NEW: the bell button */}
+              <button
+                type="button"
+                onClick={() => setNotificationOpen((open) => !open)}
+                aria-label="Notifications"
+                aria-expanded={notificationOpen}
+                className="relative flex size-10 items-center justify-center rounded-lg text-[#4A001F] transition hover:bg-[#fbe3ee]"
+              >
+                <Bell size={21} strokeWidth={1.8} />
+                {unreadCount > 0 && (
+                  <span className="absolute right-1 top-1 flex min-w-4 items-center justify-center rounded-full bg-[#e7567e] px-1 text-[10px] font-semibold leading-4 text-white">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
 
               {notificationOpen && (
                 <NotificationPanel
