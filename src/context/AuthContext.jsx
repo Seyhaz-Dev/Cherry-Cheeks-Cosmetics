@@ -87,8 +87,45 @@ function AuthProvider({ children }) {
     setUser(null)
   }
 
+  const updateProfile = (updates) => {
+    if (!user) {
+      return { error: 'No user logged in.' }
+    }
+
+    const normalizedEmail = updates.email ? updates.email.trim().toLowerCase() : user.email
+
+    if (normalizedEmail !== user.email && users.some((account) => account.email === normalizedEmail)) {
+      return { error: 'An account with this email already exists.' }
+    }
+
+    const updatedUser = {
+      ...user,
+      firstName: updates.firstName !== undefined ? updates.firstName.trim() : user.firstName,
+      lastName: updates.lastName !== undefined ? updates.lastName.trim() : user.lastName,
+      email: normalizedEmail,
+      phone: updates.phone !== undefined ? updates.phone.trim() : user.phone || '',
+      location: updates.location !== undefined ? updates.location.trim() : user.location || '',
+      bio: updates.bio !== undefined ? updates.bio.trim() : user.bio || '',
+      avatar: updates.avatar !== undefined ? updates.avatar : user.avatar || '',
+    }
+
+    const nextUsers = users.map((account) =>
+      account.email === user.email
+        ? { ...account, ...updates, email: normalizedEmail, avatar: updates.avatar !== undefined ? updates.avatar : account.avatar || '' }
+        : account
+    )
+
+    localStorage.setItem(USERS_KEY, JSON.stringify(nextUsers))
+    const session = localStorage.getItem(SESSION_KEY) ? localStorage : sessionStorage
+    session.setItem(SESSION_KEY, JSON.stringify(updatedUser))
+    setUsers(nextUsers)
+    setUser(updatedUser)
+
+    return { user: updatedUser }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, register, login, logout }}>
+    <AuthContext.Provider value={{ user, register, login, logout, updateProfile }}>
       {children}
     </AuthContext.Provider>
   )
