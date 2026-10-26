@@ -239,7 +239,7 @@ function ProFile() {
                     onClick={() => navigate("/login")}
                     className="rounded-xl bg-[#e8478a] px-6 py-2 text-white"
                   >
-                    Checkout
+                    Logout
                   </button>
                   <button type="submit" className="rounded-xl bg-[#e8478a] px-6 py-2 text-white">
                     Save Changes
