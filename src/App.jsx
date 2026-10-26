@@ -26,6 +26,7 @@ import ProductManagement from './pages/admin/ProductManagement'
 import OrderManagement from './pages/admin/OrderManagement'
 import CustomerManagement from './pages/admin/CustomerManagement'
 import Settings from './pages/admin/Settings'
+import Profile from './pages/ProFile'
 
 
 
@@ -86,16 +87,17 @@ return (
 <Route path="/orderComfirm" element={<OrderConfirmation />} />
 <Route path="/categories" element={<Categories />} />
 <Route path="/productDetail" element={<ProductDetail />} />
+<Route path="/profile" element={<Profile />} />
 <Route path="/register" element={<Register />} />
 <Route path="/login" element={<Login />} />
 
 
 <Route path="/admin" element={<AdminRoute />}>
-<Route index element={<Dashboard />} />
-<Route path="products" element={<ProductManagement />} />
-<Route path="orders" element={<OrderManagement />} />
-<Route path="customers" element={<CustomerManagement />} />
-<Route path="settings" element={<Settings />} />
+  <Route index element={<Dashboard />} />
+  <Route path="products" element={<ProductManagement />} />
+  <Route path="orders" element={<OrderManagement />} />
+  <Route path="customers" element={<CustomerManagement />} />
+  <Route path="settings" element={<Settings />} />
 </Route>
 <Route path="/orderFail" element={<OrderFail />} />
 </Routes>
