@@ -78,6 +78,7 @@ function AppLayout() {
           </Route>
           
           <Route path="/orderFail" element={<OrderFail />} />
+          <Route path='profile' element={<ProFile/>}/>
         </Routes>
       </main>
 
