@@ -1,11 +1,16 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-
 
 function Register() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { register } = useAuth();
+
+  // NEW: where the person was going before we sent them here (for example /checkout)
+  const from = location.state?.from;
+  const returnTo = from ? from.pathname + from.search : "/";
+  const cameFromCheckout = from?.pathname === "/checkout";
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -37,7 +42,8 @@ function Register() {
       return;
     }
 
-    navigate(result.user.role === "admin" ? "/admin" : "/", { replace: true });
+    // CHANGED: "Account created -> return to checkout"
+    navigate(result.user.role === "admin" ? "/admin" : returnTo, { replace: true });
   };
 
   return (
@@ -51,6 +57,13 @@ function Register() {
         <p className="mb-5 text-center text-[0.78rem] text-[#645d64] sm:text-[0.85rem]">
           Join for faster checkout, ritual notes, and early access.
         </p>
+
+        {/* NEW: shown only when the person was sent here from the checkout */}
+        {cameFromCheckout && (
+          <p className="mb-4 rounded-lg bg-pink-50 px-3 py-2 text-center text-sm text-pink-700">
+            Create an account to continue to checkout.
+          </p>
+        )}
 
         <form onSubmit={handleRegister} className="space-y-3.5">
 
@@ -168,8 +181,16 @@ function Register() {
         </form>
 
         <p className="mt-5 text-center text-sm"> Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 hover:text-blue-700">
+          {/* CHANGED: state={location.state} keeps the saved page */}
+          <Link to="/login" state={location.state} className="text-blue-600 hover:text-blue-700">
             Sign in
+          </Link>
+        </p>
+
+        {/* NEW: a way out for people who are only browsing */}
+        <p className="mt-3 text-center text-sm">
+          <Link to="/shop" className="text-[#645d64] hover:text-[#1f1b1d]">
+            ← Continue shopping
           </Link>
         </p>
       </div>

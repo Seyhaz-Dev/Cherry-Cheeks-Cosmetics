@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
+
+  // NEW: where the person was going before we sent them here (for example /checkout)
+  const from = location.state?.from;
+  const returnTo = from ? from.pathname + from.search : "/";
+  const cameFromCheckout = from?.pathname === "/checkout";
 
   // Store the email and password entered by the user
   const [email, setEmail] = useState("");
@@ -27,7 +33,8 @@ function Login() {
       return;
     }
 
-    navigate(result.user.role === "admin" ? "/admin" : "/", { replace: true });
+    // CHANGED: admins go to /admin, everyone else goes back to where they were going
+    navigate(result.user.role === "admin" ? "/admin" : returnTo, { replace: true });
   };
 
   return (
@@ -44,7 +51,12 @@ function Login() {
           Return to your saved rituals, orders, and rewards.
         </p>
 
-       
+        {/* NEW: shown only when the person was sent here from the checkout */}
+        {cameFromCheckout && (
+          <p className="mb-4 rounded-lg bg-pink-50 px-3 py-2 text-center text-sm text-pink-700">
+            Please sign in to continue to checkout.
+          </p>
+        )}
 
         <form onSubmit={handleLogin} className="space-y-4">
 
@@ -107,8 +119,16 @@ function Login() {
 
         <p className="mt-5 text-center text-sm text-[#454147]">
           Don't have an account?{" "}
-          <Link to="/register" className="font-medium text-blue-600 hover:text-blue-700" >
+          {/* CHANGED: state={location.state} keeps the saved page ("New customer" in your flow) */}
+          <Link to="/register" state={location.state} className="font-medium text-blue-600 hover:text-blue-700" >
             Register
+          </Link>
+        </p>
+
+        {/* NEW: a way out for people who are only browsing */}
+        <p className="mt-3 text-center text-sm">
+          <Link to="/shop" className="text-[#645d64] hover:text-[#1f1b1d]">
+            ← Continue shopping
           </Link>
         </p>
       </div>
