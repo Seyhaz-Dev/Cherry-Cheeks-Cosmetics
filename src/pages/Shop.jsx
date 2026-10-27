@@ -1,43 +1,24 @@
-import { useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 import SearchBar from '../components/SearchBar'
 import ProductCard from '../components/ProductCard'
-import { filterProducts, products, sortProducts } from '../data/products'
-
 import shopBanner from '../assets/herobanner.png'
 
-const itemsPerPage = 8
 
 function Shop() {
-  const [currentPage, setCurrentPage] = useState(1)
-  const [query, setQuery] = useState('')
-  const [filter, setFilter] = useState('All Product')
-  const [sort, setSort] = useState('Sort: Featured')
+   
+  const [categories, setCategories] = useState([]);
 
-  const matchingProducts = sortProducts(
-    filterProducts(products, { query, category: filter }),
-    sort,
-  )
+  useEffect (() => {
+    async function getCategories(){
+      const response = await fetch ("/student-data/categorise.json");
+      const data = await response.json();
 
-  const totalPages = Math.max(1, Math.ceil(matchingProducts.length / itemsPerPage))
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const visibleProducts = matchingProducts.slice(startIndex, startIndex + itemsPerPage)
+      setCategories(data);
+    }
+    getCategories();
 
-  const handleQueryChange = (value) => {
-    setQuery(value)
-    setCurrentPage(1)
-  }
-
-  const handleFilterChange = (value) => {
-    setFilter(value)
-    setCurrentPage(1)
-  }
-
-  const handleSortChange = (value) => {
-    setSort(value)
-    setCurrentPage(1)
-  }
+  },[]);
 
   return (
     <section className="px-4 py-10 text-[var(--color-text)]  bg-[#fbf8f5] sm:px-6 sm:py-8 lg:px-8 lg:py-10">

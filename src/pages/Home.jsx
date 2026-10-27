@@ -12,10 +12,7 @@ import productImage from "../assets/productcard1.png";
 import moonwaterImage from "../assets/moonwater.png";
 import nightCreamImage from "../assets/night-cream.png";
 import tonerImage from "../assets/peony-toner.png";
-
-// ==============================
-// POPULAR CATEGORIES
-// ==============================
+import { useEffect, useState } from "react";
 
 const categories = [
  {
@@ -47,10 +44,6 @@ const categories = [
    image: cleanserImage,
  },
 ];
-
-// ==============================
-// FEATURED PRODUCTS
-// ==============================
 
 const products = [
  {
@@ -95,10 +88,6 @@ const products = [
  },
 ];
 
-// ==============================
-// WHY CHERRY CHEEKS
-// ==============================
-
 const features = [
  {
    title: "Botanical Ingredients",
@@ -117,10 +106,6 @@ const features = [
  },
 ];
 
-// ==============================
-// CUSTOMER REVIEWS
-// ==============================
-
 const reviews = [
  {
    name: "Sora K.",
@@ -136,9 +121,6 @@ const reviews = [
  },
 ];
 
-// ==============================
-// REUSABLE SECTION HEADING
-// ==============================
 
 function SectionHead({ title, sub, link = "View All" }) {
  return (
@@ -162,10 +144,6 @@ function SectionHead({ title, sub, link = "View All" }) {
    </div>
  );
 }
-
-// ==============================
-// HOME PAGE
-// ==============================
 
 export default function Home() {
  return (

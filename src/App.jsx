@@ -7,7 +7,6 @@ import { CartProvider } from './context/CartContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import AdminLayout from './layouts/AdminLayout'
 
-
 import Home from './pages/Home'
 import About from './pages/About'
 import Contact from './pages/Contact'
@@ -93,6 +92,7 @@ return (
 <Route path="/profile" element={<Profile />} />
 <Route path="/register" element={<Register />} />
 <Route path="/login" element={<Login />} />
+<Route path="/Test" element={Test}/>
 
 
 <Route path="/admin" element={<AdminRoute />}>
