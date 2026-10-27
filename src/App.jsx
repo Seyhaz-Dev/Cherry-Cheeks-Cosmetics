@@ -1,12 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 
-
 import Header from './components/Header'
 import Footer from './components/Footer'
 import { CartProvider } from './context/CartContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import AdminLayout from './layouts/AdminLayout'
-
 
 import Home from './pages/Home'
 import About from './pages/About'
@@ -27,91 +25,76 @@ import ProductManagement from './pages/admin/ProductManagement'
 import OrderManagement from './pages/admin/OrderManagement'
 import CustomerManagement from './pages/admin/CustomerManagement'
 import Settings from './pages/admin/Settings'
-import Profile from './pages/ProFile'
-
-
 
 function AdminRoute() {
-const { user } = useAuth()
+  const { user } = useAuth()
 
-
-return user?.role === 'admin' ? <AdminLayout /> : <Navigate to="/" replace />
+  return user?.role === 'admin' ? <AdminLayout /> : <Navigate to="/" replace />
 }
 
+function RequireAuth({ children }) {
+  const { user } = useAuth()
+  const location = useLocation()
 
-function AdminSection({ title }) {
-return (
-<section className="rounded-lg border border-[#f0d9e4] bg-white p-6">
-<h1 className="mt-2 text-2xl font-semibold text-[#30252a]">{title}</h1>
-</section>
-  )
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />
+  }
+
+  return children
 }
-
 
 function EntryRoute() {
-const { user } = useAuth()
+  const { user } = useAuth()
 
-
-if (!user) {
-return <Navigate to="/login" replace />
+  if (user?.role === 'admin') {
+    return <Navigate to="/admin" replace />
   }
 
-
-if (user.role === 'admin') {
-return <Navigate to="/admin" replace />
-  }
-
-
-return <Home />
+  return <Home />
 }
-
 
 function AppLayout() {
-const location = useLocation()
-const isAuthPage = ['/login', '/register'].includes(location.pathname)
-const isAdminPage = location.pathname.startsWith('/admin')
+  const location = useLocation()
+  const isAuthPage = ['/login', '/register'].includes(location.pathname)
+  const isAdminPage = location.pathname.startsWith('/admin')
 
+  return (
+    <div className="flex min-h-screen flex-col">
+      {!isAuthPage && !isAdminPage && <Header />}
 
-return (
-<div className="flex min-h-screen flex-col">
-{!isAuthPage && !isAdminPage && <Header />}
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<EntryRoute />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/productDetail" element={<ProductDetail />} />
+          <Route path="/search" element={<SearchResults />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
 
+          <Route path="/checkout" element={<RequireAuth><Checkout /></RequireAuth>} />
+          <Route path="/profile" element={<RequireAuth><ProFile /></RequireAuth>} />
 
-<main className="flex-1">
-<Routes>
-<Route path="/" element={<EntryRoute />} />
-<Route path="/about" element={<About />} />
-<Route path="/contact" element={<Contact />} />
-<Route path="/shop" element={<Shop />} />
-<Route path="/cart" element={<Cart />} />
-<Route path="/profile" element={<ProFile />} />
-<Route path="/checkout" element={<Checkout />} />
-<Route path="/orderComfirm" element={<OrderConfirmation />} />
-<Route path="/categories" element={<Categories />} />
-        <Route path="/productDetail" element={<ProductDetail />} />
-        <Route path="/search" element={<SearchResults />} />
-<Route path="/profile" element={<Profile />} />
-<Route path="/register" element={<Register />} />
-<Route path="/login" element={<Login />} />
+          <Route path="/orderComfirm" element={<OrderConfirmation />} />
+          <Route path="/orderFail" element={<OrderFail />} />
 
+          <Route path="/admin" element={<AdminRoute />}>
+            <Route index element={<Dashboard />} />
+            <Route path="products" element={<ProductManagement />} />
+            <Route path="orders" element={<OrderManagement />} />
+            <Route path="customers" element={<CustomerManagement />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+        </Routes>
+      </main>
 
-<Route path="/admin" element={<AdminRoute />}>
-  <Route index element={<Dashboard />} />
-  <Route path="products" element={<ProductManagement />} />
-  <Route path="orders" element={<OrderManagement />} />
-  <Route path="customers" element={<CustomerManagement />} />
-  <Route path="settings" element={<Settings />} />
-</Route>
-<Route path="/orderFail" element={<OrderFail />} />
-</Routes>
-</main>
-
-
-{!isAuthPage && !isAdminPage && <Footer />}
-</div>
+      {!isAuthPage && !isAdminPage && <Footer />}
+    </div>
   )
 }
-
 
 function App() {
   return (
@@ -124,6 +107,5 @@ function App() {
     </BrowserRouter>
   )
 }
-
 
 export default App
