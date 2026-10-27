@@ -68,7 +68,7 @@ function Header() {
           </div>
 
           <div className="flex items-center">
-            <Link to="/search" aria-label="Search" className="inline-flex h-10 w-10 items-center justify-center text-[var(--color-text)] transition hover:text-pink-600" >
+            <Link to="/shop" aria-label="Search" className="inline-flex h-10 w-10 items-center justify-center text-[var(--color-text)] transition hover:text-pink-600" >
               <FontAwesomeIcon icon={faMagnifyingGlass} className="text-lg" />
             </Link>
 
