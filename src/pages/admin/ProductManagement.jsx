@@ -23,7 +23,7 @@ const STATUS = {
 const CATEGORIES = ['Skincare', 'Lips', 'Face', 'Eyes', 'Cheeks']
 
 // What the form looks like when it is empty. Used to reset the form.
-const EMPTY_FORM = { name: '', type: '', category: 'Skincare', price: '', stock: '', image: '' }
+const EMPTY_FORM = { name: '', sku: '', categoryId: '', price: '', stockQuantity: '', image: '' }
 
 // One style shared by all the form inputs (so we don't repeat it 5 times)
 const inputClass = 'mt-1 w-full rounded-md border border-[#e6d3dc] px-3 py-2 text-sm outline-none focus:border-[#e0568a]'
@@ -55,21 +55,25 @@ function ProductManagement() {
 	// NEW: a message if the file could not be loaded
 	const [loadError, setLoadError] = useState('')
 
-	// NEW: useEffect runs ONE time, when the page opens (that is what the [] at the end means)
 	useEffect(() => {
-		fetch('/data/products.json')            // ask the server for the file
-			.then((res) => {
-				if (!res.ok) throw new Error('File not found')   // the file is missing
-				return res.json()               // turn the file text into a JavaScript list
-			})
-			.then((data) => {
-				setProducts(data)               // put the list in the page's memory
-				setLoading(false)               // stop showing "Loading..."
-			})
-			.catch(() => {
-				setLoadError('Could not load the products. Check public/data/products.json')
+		async function loadData() {
+			try {
+				// wait for each file
+				const productsRes = await fetch('/student-data/products.json')
+				const categoriesRes = await fetch('/student-data/categories.json')
+				if (!productsRes.ok || !categoriesRes.ok) throw new Error('File not found')
+
+				// turn each file into a list and keep it
+				setProducts(await productsRes.json())
+				setCategories(await categoriesRes.json())
+			} catch {
+				setLoadError('Could not load the data. Check public/student-data/')
+			} finally {
 				setLoading(false)
-			})
+			}
+		}
+
+		loadData()
 	}, [])
 
 	// Toolbar: the text in the search box, and the chosen status filter
@@ -119,7 +123,7 @@ function ProductManagement() {
 	// ADD: open the popup EMPTY (add mode)
 	const openAddForm = () => {
 		setEditingId(null)
-		setForm(EMPTY_FORM)
+		setForm({ ...EMPTY_FORM, categoryId: categories[0]?.id ?? '' })
 		setShowForm(true)
 	}
 
