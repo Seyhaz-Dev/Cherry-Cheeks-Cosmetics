@@ -173,7 +173,7 @@ export default function Home() {
 
      {/* HERO SECTION */}
 
-     <section className="mx-auto grid max-w-7xl items-center gap-9 px-5 pb-12 pt-10 sm:px-8 md:grid-cols-2 md:gap-14 md:pb-20 md:pt-16">
+     <section className="mx-auto grid max-w-7xl items-center gap-9 px-5 pb-12 pt-10 sm:px-8 md:grid-cols-2 md:gap-14 md:pb-10 md:pt-10">
        <div>
          <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#89565a] sm:text-sm">
            Cherry Cheeks · Seoul Skin Ritual

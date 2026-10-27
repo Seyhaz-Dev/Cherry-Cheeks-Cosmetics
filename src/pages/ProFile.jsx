@@ -79,8 +79,8 @@ function ProFile() {
     "peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-[#e8478a] peer-checked:after:translate-x-full peer-checked:after:border-white";
 
   return (
-    <section className="bg-[#fbf8f5] font-bold">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:gap-10 lg:px-8 lg:py-12">
+    <section className="bg-[#fbf8f5] ">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-8 sm:px-6 sm:py-10 lg:gap-4 lg:px-8 lg:py-10">
         <h2>My Account</h2>
 
         {/* Profile card (left) + form (right), equal height */}
