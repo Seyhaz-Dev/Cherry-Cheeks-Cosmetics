@@ -67,10 +67,12 @@ function AppLayout() {
           <Route path="/" element={<EntryRoute />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+
           <Route path="/shop" element={<Shop />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+
           <Route path="/cart" element={<Cart />} />
           <Route path="/categories" element={<Categories />} />
-          <Route path="/productDetail" element={<ProductDetail />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />

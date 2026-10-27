@@ -1,19 +1,37 @@
-import imgProduct from "../assets/product200.png";
-import imgGlowSerum from "../assets/glow-serum.png";
-import imgProductCard from "../assets/productcard.png";
-import Dewy from "../assets/Dewy.png";
-import imgProductCard1 from "../assets/productcard1.png";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTruck } from "@fortawesome/free-solid-svg-icons";
 import { faBagShopping } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useCart } from "../context/CartContext";
 
-const IMAGES = [
-  { src: imgProduct, alt: "Dewdrop Renewal Serum bottle" },
-  { src: imgGlowSerum, alt: "Serum texture close-up" },
-  { src: imgProductCard1, alt: "Serum packaging detail" },
-  { src: imgProductCard, alt: "Serum product shot" },
-];
+import cleanserImage from "../assets/cleanser.png";
+import serumImage from "../assets/glow-serum.png";
+import sunscreenImage from "../assets/productcard.png";
+import moisturizerImage from "../assets/moisture-essence.png";
+import lipTintImage from "../assets/productcard1.png";
+import blushImage from "../assets/cream-balm.png";
+import foundationImage from "../assets/product200.png";
+import shampooImage from "../assets/productcard.png";
+import conditionerImage from "../assets/night-cream.png";
+import perfumeImage from "../assets/Dewy.png";
+import bodyLotionImage from "../assets/cream-balm.png";
+import handCreamImage from "../assets/peony-toner.png";
+
+const productImages = {
+  101: cleanserImage,
+  102: serumImage,
+  103: sunscreenImage,
+  104: moisturizerImage,
+  201: lipTintImage,
+  202: blushImage,
+  203: foundationImage,
+  301: shampooImage,
+  302: conditionerImage,
+  401: perfumeImage,
+  501: bodyLotionImage,
+  502: handCreamImage,
+};
 
 const TEXTCHECK = [
   "Deeply hydrates for up to 48 hours",
@@ -67,55 +85,103 @@ const REVIEWS = [
 ];
 
 function ProductDetail() {
-  const [count, setCount] = useState(1);
-  const [openIndex, setOpenIndex] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(IMAGES[0].src);
+    const { id } = useParams();
+    const { addToCart } = useCart();
+    const navigate = useNavigate();
 
+    const handleAddToBag = () => {
+    addToCart(
+        {
+        ...product,
+        image: productImages[product.id],
+        },
+        count
+    );
+
+    alert("Product added to your bag!");
+    };
+
+    const handleBuyNow = () => {
+    addToCart(
+        {
+        ...product,
+        image: productImages[product.id],
+        },
+        count
+    );
+
+    navigate("/cart");
+    };
+
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const [count, setCount] = useState(1);
+    const [openIndex, setOpenIndex] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+    
+    const mainImage = selectedImage || productImages[product?.id];  
+
+    useEffect(() => {
+    async function getProducts() {
+        const response = await fetch("/student-data/products.json");
+        const data = await response.json();
+
+        const selectedProduct = data.find(
+        (item) => String(item.id) === id
+        );
+
+        setProduct(selectedProduct || null);
+        setSelectedImage(null);
+        setLoading(false);
+    }
+
+    getProducts();
+    }, [id]);
+
+    if (loading) {
+    return <p className="p-8">Loading product...</p>;
+    }
+
+    if (!product) {
+    return <p className="p-8">Product not found.</p>;
+    }
   return (
     <section className="bg-[var(--color-background)]">
         <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-8 px-4 py-4 sm:px-6 sm:py-6 lg:grid-cols-2 lg:gap-12 lg:py-10">
             <div className="flex w-full flex-col">
-            <p className="text-sm sm:text-base">
-                Shop / <span className="font-bold">Dewdrop Renewal Serum</span>
-            </p>
-            <img
-                className="mt-4 aspect-[4/5] w-full rounded-4xl object-cover sm:aspect-[4/3] lg:aspect-auto lg:h-[600px]"
-                src={selectedImage}
-                alt="photo of product"
-            />
-            <div className="flex gap-3 pt-3">
-                {IMAGES.map((image) => (
-                <button
-                    key={image.src}
-                    type="button"
-                    aria-label={`Choose ${image.alt}`}
-                    aria-pressed={selectedImage === image.src}
-                    onClick={() => setSelectedImage(image.src)}
-                    className={`h-16 w-16 cursor-pointer overflow-hidden rounded-xl border-2 transition sm:h-20 sm:w-20 ${
-                    selectedImage === image.src
-                        ? "border-[var(--color-button)]"
-                        : "border-transparent hover:border-pink-300"
-                    }`}
-                >
-                    <img
-                    src={image.src}
-                    alt={image.alt}
-                    className="h-full w-full object-cover"
-                    />
-                </button>
-                ))}
-            </div>
+                <p className="text-sm sm:text-base">
+                    Shop / <span className="font-bold">{product.name}</span>
+                </p>
+                <img
+                    className="mt-4 h-[400px] w-full rounded-4xl object-contain sm:h-[500px] lg:h-[600px]"
+                    src={mainImage}
+                    alt={product.name}
+                />
+                <div className="flex gap-3 pt-3">
+                    <button
+                        type="button"
+                        onClick={() => setSelectedImage(productImages[product.id])}
+                        className="h-16 w-16 overflow-hidden rounded-xl border-2 sm:h-20 sm:w-20"
+                    >
+                        <img
+                        src={productImages[product.id]}
+                        alt={product.name}
+                        className="h-full w-full object-contain"
+                        />
+                    </button>
+                </div>
             </div>
 
             <div className="flex w-full flex-col gap-4 text-start sm:gap-5 lg:pt-6">
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--color-button)]">Serum Bestseller</p>
-            <h2 className="text-2xl leading-tight sm:text-3xl lg:text-4xl">Dewdrop Renewal Serum</h2>
+            <h2 className="text-2xl leading-tight sm:text-3xl lg:text-4xl"> {product.name} </h2>
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span className="text-yellow-500">★★★★★</span>
                 <p>4.9</p>
                 <p className="text-gray-500">184 reviews</p>
             </div>
-            <p className="text-xl font-semibold sm:text-2xl">$68</p>
+            <p className="text-xl font-semibold sm:text-2xl"> ${Number(product.price).toFixed(2)} </p>
             <p className="font-bold text-gray-600">
                 A cushiony, fast-absorbing serum that floods skin with hydration
                 while strengthening the moisture barrier. Rice ferment, ectoin, and
@@ -157,17 +223,18 @@ function ProductDetail() {
                     +
                 </button>
                 </div>
-                <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[var(--color-button)] px-4 py-3 transition hover:opacity-80 sm:w-auto sm:flex-1 sm:py-2 lg:max-w-xs">
-                <FontAwesomeIcon
-                    icon={faBagShopping}
-                    style={{ fontSize: "16px", color: "white" }}
-                />
-                <p className="font-bold text-[var(--color-white-text)]">
-                    Add to bag $68
-                </p>
+                <button type="button" onClick={handleAddToBag} className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[var(--color-button)] px-4 py-3 transition hover:opacity-80 sm:w-auto sm:flex-1 sm:py-2 lg:max-w-xs">
+                    <FontAwesomeIcon
+                        icon={faBagShopping}
+                        style={{ fontSize: "16px", color: "white" }}
+                    />
+
+                    <p className="font-bold text-[var(--color-white-text)]">
+                        Add to bag ${(Number(product.price) * count).toFixed(2)}
+                    </p>
                 </button>
             </div>
-            <button className="flex w-full cursor-pointer items-center justify-center rounded-md border border-[var(--color-button)] bg-gray-100 px-4 py-3 shadow-[var(--color-button)] transition hover:shadow-xl sm:py-2 lg:max-w-xs">
+            <button type="button" onClick={handleBuyNow} className="flex w-full cursor-pointer items-center justify-center rounded-md border border-[var(--color-button)] bg-gray-100 px-4 py-3 shadow-[var(--color-button)] transition hover:shadow-xl sm:py-2 lg:max-w-xs">
                 <p className="font-bold">Buy now</p>
             </button>
             <div className="flex items-start gap-2 text-sm text-gray-600">
@@ -223,7 +290,7 @@ function ProductDetail() {
         {/* Inside the formula */}
         <div className="mt-16 grid w-full grid-cols-1 md:mt-20 md:grid-cols-2">
         <img
-            src={Dewy}
+            src={mainImage}
             alt="Dewy serum formula texture"
             className="h-100 w-full object-cover rounded-xl"
         />
