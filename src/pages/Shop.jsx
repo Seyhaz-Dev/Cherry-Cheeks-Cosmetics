@@ -1,28 +1,102 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { sortProducts } from '../data/products'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import SearchBar from '../components/SearchBar'
 import ProductCard from '../components/ProductCard'
-import { filterProducts, products, sortProducts } from '../data/products'
-
 import shopBanner from '../assets/herobanner.png'
+import cleanserImage from '../assets/cleanser.png'
+import serumImage from '../assets/glow-serum.png'
+import sunscreenImage from '../assets/productcard.png'
+import moisturizerImage from '../assets/moisture-essence.png'
+import lipTintImage from '../assets/productcard1.png'
+import blushImage from '../assets/cream-balm.png'
+import foundationImage from '../assets/product200.png'
+import shampooImage from '../assets/productcard.png'
+import conditionerImage from '../assets/night-cream.png'
+import perfumeImage from '../assets/Dewy.png'
+import bodyLotionImage from '../assets/cream-balm.png'
+import handCreamImage from '../assets/peony-toner.png'
+
+// Convert category IDs into category names
+const categoryNames = {
+  1: 'Skincare',
+  2: 'Makeup',
+  3: 'Haircare',
+  4: 'Fragrance',
+  5: 'Body Care',
+}
 
 const itemsPerPage = 8
 
+const productImages = {
+  101: cleanserImage,
+  102: serumImage,
+  103: sunscreenImage,
+  104: moisturizerImage,
+  201: lipTintImage,
+  202: blushImage,
+  203: foundationImage,
+  301: shampooImage,
+  302: conditionerImage,
+  401: perfumeImage,
+  501: bodyLotionImage,
+  502: handCreamImage,
+}
+
 function Shop() {
+  const [products, setProducts] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('All Product')
   const [sort, setSort] = useState('Sort: Featured')
 
+  useEffect(() => {
+    async function getProducts() {
+      const response = await fetch('/student-data/products.json')
+      const data = await response.json()
+      // console.log(data)
+
+      setProducts(data)
+    }
+
+    getProducts()
+  }, [])
+
+  const categoryIds = {
+  Skincare: 1,
+  Makeup: 2,
+  Haircare: 3,
+  Fragrance: 4,
+  'Body Care': 5,
+  }
+
   const matchingProducts = sortProducts(
-    filterProducts(products, { query, category: filter }),
+    products.filter((product) => {
+      const matchesCategory =
+        filter === 'All Product' ||
+        product.categoryId === categoryIds[filter]
+
+      const matchesSearch = product.name
+        .toLowerCase()
+        .includes(query.toLowerCase())
+
+      return matchesCategory && matchesSearch
+    }),
     sort,
   )
 
-  const totalPages = Math.max(1, Math.ceil(matchingProducts.length / itemsPerPage))
+  const totalPages = Math.max(
+    1,
+    Math.ceil(matchingProducts.length / itemsPerPage),
+  )
+
   const startIndex = (currentPage - 1) * itemsPerPage
-  const visibleProducts = matchingProducts.slice(startIndex, startIndex + itemsPerPage)
+
+  const visibleProducts = matchingProducts.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  )
 
   const handleQueryChange = (value) => {
     setQuery(value)
@@ -53,9 +127,18 @@ function Shop() {
         <div className="mb-12">
           {visibleProducts.length > 0 ? (
             <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+              
               {visibleProducts.map((product) => (
-                <ProductCard key={product.id} id={product.id} image={product.image} category={product.type} name={product.name} price={product.price} rating={product.rating} reviews={product.reviews}/>
+                <ProductCard
+                  key={product.id}
+                  id={product.id}
+                  name={product.name}
+                  category={categoryNames[product.categoryId] || 'Other'}
+                  price={product.price}
+                  image={productImages[product.id]}
+                />
               ))}
+
             </div>
           ) : (
             <div className="rounded-2xl border border-[#eee4df] bg-white px-6 py-16 text-center">
