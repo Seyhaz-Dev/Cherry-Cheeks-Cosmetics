@@ -24,7 +24,7 @@ const categoryNames = {
   2: 'Makeup',
   3: 'Haircare',
   4: 'Fragrance',
-  5: 'Body Care',
+  5: 'BodyCare',
 }
 
 const itemsPerPage = 8
@@ -45,22 +45,22 @@ const productImages = {
 }
 
 function Shop() {
-  const [products, setProducts] = useState([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const [query, setQuery] = useState('')
-  const [filter, setFilter] = useState('All Product')
-  const [sort, setSort] = useState('Sort: Featured')
+  const [products, setProducts] = useState([])          //store the list of poduct 
+  const [currentPage, setCurrentPage] = useState(1)     //store the current page number 
+  const [query, setQuery] = useState('')                //store the serach  text
+  const [filter, setFilter] = useState('All Product')   //store the selected prodct filter 
+  const [sort, setSort] = useState('Sort: Featured')    //store  the selected sorting option
 
   useEffect(() => {
     async function getProducts() {
-      const response = await fetch('/student-data/products.json')
+      const response = await fetch('/student-data/products.json')   //get profuct from json file 
       const data = await response.json()
       // console.log(data)
 
-      setProducts(data)
+      setProducts(data)     //store product in state and update page
     }
 
-    getProducts()
+    getProducts()     //call the function to load the product 
   }, [])
 
   const categoryIds = {
@@ -68,16 +68,16 @@ function Shop() {
   Makeup: 2,
   Haircare: 3,
   Fragrance: 4,
-  'Body Care': 5,
+  BodyCare: 5,
   }
 
-  const matchingProducts = sortProducts(
-    products.filter((product) => {
-      const matchesCategory =
-        filter === 'All Product' ||
-        product.categoryId === categoryIds[filter]
+  const matchingProducts = sortProducts(    //use for sorting filtered product 
+    products.filter((product) => {        //use for finding profuct that match 
+      const matchesCategory =                 
+        filter === 'All Product' ||         // to show all categoies
+        product.categoryId === categoryIds[filter]    //use for filting by categories 
 
-      const matchesSearch = product.name
+      const matchesSearch = product.name      //
         .toLowerCase()
         .includes(query.toLowerCase())
 
