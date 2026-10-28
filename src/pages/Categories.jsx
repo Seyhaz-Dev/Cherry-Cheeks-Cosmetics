@@ -1,42 +1,61 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import SearchBar from "../components/SearchBar";
 import ProductCard from "../components/ProductCard";
 import { filterProducts, products, sortProducts } from "../data/products";
 import categoryImage from "../assets/category1.png";
 
-// How many products show on one page (use 4 when you have more products)
 const PAGE_SIZE = 8;
 
 export default function Categories() {
+  
+  const [categories, setCategories] = useState([]);
 
-  // The page the person is on (starts at page 1)
+  useEffect(() => {
+    async function getCategories() {
+      try {
+      
+        const response = await fetch("public/student-data/categories.json");
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+        
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error loading categories:", error);
+      }
+    }
+
+    getCategories();
+  }, []);
+
+ 
   const [page, setPage] = useState(1);
-
-  // Live search, category filter and sort
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("All Product");
   const [sort, setSort] = useState("Sort: Featured");
 
-  // Products that match the search + filter, then sorted
   const matchingProducts = sortProducts(
     filterProducts(products, { query, category: filter }),
-    sort,
+    sort
   );
 
-  // How many pages there are in total
   const totalPages = Math.max(1, Math.ceil(matchingProducts.length / PAGE_SIZE));
 
-  // Page 1 starts at item 0, page 2 at item 2, page 3 at item 4 ...
+
   const startIndex = (page - 1) * PAGE_SIZE;
 
-  // Only the products for THIS page
-  const visibleProducts = matchingProducts.slice(startIndex, startIndex + PAGE_SIZE);
+  const visibleProducts = matchingProducts.slice(
+    startIndex,
+    startIndex + PAGE_SIZE
+  );
 
-  // For the text "Showing 1–2 of 4"
   const firstShown = matchingProducts.length === 0 ? 0 : startIndex + 1;
   const lastShown = startIndex + visibleProducts.length;
 
+ 
   const handleQueryChange = (value) => {
     setQuery(value);
     setPage(1);
@@ -52,9 +71,9 @@ export default function Categories() {
     setPage(1);
   };
 
-
   return (
     <main className="overflow-hidden bg-[#fbf8f5] font-['Outfit',sans-serif] text-[#292524]">
+      {/* HERO SECTION */}
       <section className="mx-auto grid max-w-7xl items-center gap-9 px-5 pb-12 pt-10 sm:px-8 md:grid-cols-2 md:gap-14 md:pb-16 md:pt-16">
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#89565a] sm:text-sm">
@@ -64,15 +83,15 @@ export default function Categories() {
             Skincare <span className="text-[#e94f7d]">Routine</span>
           </h1>
           <p className="mt-2 max-w-lg text-sm leading-7 text-[#817874] sm:text-base">
-            Find your favorite beauty products, from skincare to makeup, <br /> all in one place.
+            Find your favorite beauty products, from skincare to makeup,{" "}
+            <br /> all in one place.
           </p>
           <a
             href="#products"
             className="mt-2 inline-flex items-center justify-center rounded-full bg-[#e94f7d] px-7 py-3 text-sm font-medium text-white transition-colors duration-300 hover:bg-[#d93d6c]"
           >
-            Explore the collection 
+            Explore the collection
           </a>
-          
         </div>
         <img
           src={categoryImage}
@@ -81,11 +100,13 @@ export default function Categories() {
         />
       </section>
 
+      {/* PRODUCTS & FILTER SECTION */}
       <section
         id="products"
-        className="mx-auto max-w-7xl scroll-mt-20 px-5 py-12 sm:px-8 md:py-16">
-
+        className="mx-auto max-w-7xl scroll-mt-20 px-5 py-12 sm:px-8 md:py-16"
+      >
         <div className="mb-8 rounded-2xl border border-[#eee4df] bg-white p-3 sm:p-4">
+          {/* Kept exactly as your original code */}
           <SearchBar
             onQueryChange={handleQueryChange}
             onFilterChange={handleFilterChange}
@@ -93,6 +114,7 @@ export default function Categories() {
           />
         </div>
 
+        {/* PRODUCT GRID */}
         {visibleProducts.length > 0 ? (
           <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
             {visibleProducts.map((product) => (
@@ -102,69 +124,63 @@ export default function Categories() {
         ) : (
           <div className="rounded-2xl border border-[#eee4df] bg-white px-6 py-16 text-center">
             <p className="text-lg font-semibold">No products found</p>
-            <p className="mt-2 text-sm text-[#817874]">Try a different keyword or category.</p>
+            <p className="mt-2 text-sm text-[#817874]">
+              Try a different keyword or category.
+            </p>
           </div>
         )}
 
-        <section>
-
+        {/* PAGINATION */}
         {matchingProducts.length > 0 && (
-        <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-between gap-4 border-b border-gray-100 px-4 py-4 sm:flex-row sm:px-8">
+          <div className="mx-auto mt-8 flex w-full max-w-[1200px] flex-col items-center justify-between gap-4 border-b border-gray-100 px-4 py-4 sm:flex-row sm:px-8">
+            <p className="text-xs text-[#8b8490] sm:text-sm">
+              Showing {firstShown}–{lastShown} of {matchingProducts.length}
+            </p>
 
-          {/* The text is now real numbers */}
-          <p className="text-xs text-[#8b8490] sm:text-sm">
-            Showing {firstShown}–{lastShown} of {matchingProducts.length}
-          </p>
-
-          <div className="flex items-center gap-1.5">
-
-            {/* Previous: go back one page. disabled on page 1. */}
-            <button
-              type="button"
-              aria-label="Previous page"
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-              className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#e9e4eb] bg-white text-sm text-[#8b8490] transition hover:border-pink-400 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              ‹
-            </button>
-
-            {/* One button for each page: 1, 2, 3 ... */}
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+            <div className="flex items-center gap-1.5">
               <button
-                key={number}
                 type="button"
-                onClick={() => setPage(number)}
-                aria-current={number === page ? "page" : undefined}
-                className={`flex h-[30px] w-[30px] items-center justify-center rounded-md border text-sm transition ${
-                  number === page
-                    ? "border-[#df5685] bg-[#df5685] text-white"
-                    : "border-[#e9e4eb] bg-white text-[#8b8490] hover:border-pink-400 hover:text-pink-500"
-                }`}
+                aria-label="Previous page"
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
+                className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#e9e4eb] bg-white text-sm text-[#8b8490] transition hover:border-pink-400 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                {number}
+                ‹
               </button>
-            ))}
 
-            {/* Next: go forward one page. disabled on the last page. */}
-            <button
-              type="button"
-              aria-label="Next page"
-              onClick={() => setPage(page + 1)}
-              disabled={page === totalPages}
-              className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#e9e4eb] bg-white text-sm text-[#8b8490] transition hover:border-pink-400 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              ›
-            </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (number) => (
+                  <button
+                    key={number}
+                    type="button"
+                    onClick={() => setPage(number)}
+                    aria-current={number === page ? "page" : undefined}
+                    className={`flex h-[30px] w-[30px] items-center justify-center rounded-md border text-sm transition ${
+                      number === page
+                        ? "border-[#df5685] bg-[#df5685] text-white"
+                        : "border-[#e9e4eb] bg-white text-[#8b8490] hover:border-pink-400 hover:text-pink-500"
+                    }`}
+                  >
+                    {number}
+                  </button>
+                )
+              )}
 
+              <button
+                type="button"
+                aria-label="Next page"
+                onClick={() => setPage(page + 1)}
+                disabled={page === totalPages}
+                className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#e9e4eb] bg-white text-sm text-[#8b8490] transition hover:border-pink-400 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                ›
+              </button>
+            </div>
           </div>
-        </div>
         )}
-
-      </section>
-      
       </section>
 
+      {/* BOTTOM BANNER */}
       <section className="mx-auto max-w-7xl px-5 pb-14 sm:px-8 md:pb-20">
         <div className="grid items-center gap-6 overflow-hidden rounded-2xl bg-[#f6e9e4] p-7 sm:p-10 md:grid-cols-[1fr_auto] md:px-14 md:py-12">
           <div>
@@ -180,14 +196,12 @@ export default function Categories() {
           </div>
           <a
             href="#products"
-            className="inline-flex w-fit items-center justify-center rounded-full bg-[var(--color-button)] px-6 py-3 text-sm font-medium text-white transition-colors "
+            className="inline-flex w-fit items-center justify-center rounded-full bg-[#e94f7d] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#d93d6c]"
           >
-            Shop Now  →
+            Shop Now →
           </a>
         </div>
-      </section> 
+      </section>
     </main>
-
-
   );
 }

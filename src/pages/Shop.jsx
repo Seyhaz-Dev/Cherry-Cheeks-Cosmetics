@@ -18,7 +18,6 @@ import perfumeImage from '../assets/Dewy.png'
 import bodyLotionImage from '../assets/cream-balm.png'
 import handCreamImage from '../assets/peony-toner.png'
 
-// Convert category IDs into category names
 const categoryNames = {
   1: 'Skincare',
   2: 'Makeup',
@@ -55,7 +54,6 @@ function Shop() {
     async function getProducts() {
       const response = await fetch('/student-data/products.json')
       const data = await response.json()
-      // console.log(data)
 
       setProducts(data)
     }
