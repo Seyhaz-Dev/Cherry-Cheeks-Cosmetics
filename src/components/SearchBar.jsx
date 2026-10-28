@@ -1,20 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
-const DEFAULT_FILTER = 'All Product'
 const DEFAULT_SORT = 'Sort: Featured'
-
-const FILTERS = [
-  DEFAULT_FILTER,
-  'Skincare',
-  'Makeup',
-  'Hair Care',
-  'Body Care',
-  'Fragrance',
-  'Tools & Accessories',
-]
 
 const SORT_OPTIONS = [
   DEFAULT_SORT,
@@ -24,156 +13,135 @@ const SORT_OPTIONS = [
   'Newest',
 ]
 
-function PillSelect({ value, onChange, options, label, textClassName = 'text-gray-600' }) {
-  return (
-    <div className="group relative h-11 w-full min-w-0 flex-1 rounded-full border border-[#E9E6EA] bg-white transition hover:border-pink-300 focus-within:border-pink-300 focus-within:ring-2 focus-within:ring-pink-100 sm:w-48 sm:flex-none sm:shrink-0">
-      {/* Visible content: text + icon centered together */}
-      <div
-        className={`pointer-events-none flex h-full items-center justify-center gap-2 px-4 text-sm font-medium ${textClassName}`}
-      >
-        <span className="truncate">{value}</span>
-        <FontAwesomeIcon
-          icon={faChevronDown}
-          aria-hidden="true"
-          className="h-3 w-3 shrink-0 text-gray-400"
-        />
-      </div>
-
-      {/* Real select, invisible, covers the whole pill */}
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        aria-label={label}
-        className="absolute inset-0 h-full w-full cursor-pointer appearance-none rounded-full opacity-0"
-      >
-        {options.map((item) => (
-          <option key={item} value={item}>
-            {item}
-          </option>
-        ))}
-      </select>
-    </div>
-  )
-}
-
-function buildSearchUrl({ query, filter, sort }) {
-  const params = new URLSearchParams()
-  const trimmedQuery = query.trim()
-
-  if (trimmedQuery) params.set('q', trimmedQuery)
-  if (filter !== DEFAULT_FILTER) params.set('category', filter)
-  if (sort !== DEFAULT_SORT) params.set('sort', sort)
-
-  const search = params.toString()
-  return search ? `/search?${search}` : '/search'
-}
-
-function SearchBar({
-  placeholder = 'Search Product ...',
-  onQueryChange,
-  onFilterChange,
-  onSortChange,
-}) {
+function SearchBar() {
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams] = useSearchParams()
 
+  // Are we already on the search results page?
   const isSearchPage = location.pathname === '/search'
-  const isLiveFilter = Boolean(onQueryChange || onFilterChange || onSortChange)
 
-  const [query, setQuery] = useState(searchParams.get('q') ?? '')
-  const [filter, setFilter] = useState(searchParams.get('category') ?? DEFAULT_FILTER)
-  const [sort, setSort] = useState(searchParams.get('sort') ?? DEFAULT_SORT)
+  // Start with the values from the URL (empty category = all products)
+  const [query, setQuery] = useState(searchParams.get('q') || '')
+  const [category, setCategory] = useState(searchParams.get('category') || '')
+  const [sort, setSort] = useState(searchParams.get('sort') || DEFAULT_SORT)
 
-  // On the results page the grid updates while typing, without pressing Enter.
+  // Category names (starts with defaults, replaced by the JSON file)
+  const [categories, setCategories] = useState([  ])
+
+  // 1. Load categories from public/student-data/categories.json
   useEffect(() => {
-    if (!isSearchPage) return
+    async function getCategories() {
+      try {
+        const response = await fetch('/student-data/categories.json')
+        const data = await response.json()
 
-    const target = buildSearchUrl({ query, filter, sort })
-    if (target === `${location.pathname}${location.search}`) return
+        setCategories(data.map((item) => item.name))
+      } catch (error) {
+        console.error('Could not load categories:', error)
+      }
+    }
 
-    const timeout = setTimeout(() => {
-      navigate(target, { replace: true })
-    }, 200)
+    getCategories()
+  }, [])
 
-    return () => clearTimeout(timeout)
-  }, [query, filter, sort, isSearchPage, navigate, location.pathname, location.search])
+  // 2. Build the URL and go to the search page
+  function goToSearch(newQuery, newCategory, newSort) {
+    const params = new URLSearchParams()
 
-  const runSearch = ({
-    nextQuery = query,
-    nextFilter = filter,
-    nextSort = sort,
-  } = {}) => {
-    navigate(buildSearchUrl({ query: nextQuery, filter: nextFilter, sort: nextSort }))
+    if (newQuery.trim()) params.set('q', newQuery.trim())
+    if (newCategory) params.set('category', newCategory)
+    if (newSort !== DEFAULT_SORT) params.set('sort', newSort)
+
+    const text = params.toString()
+    const url = text ? `/search?${text}` : '/search'
+
+    // On the search page, replace the history entry so Back doesn't get cluttered
+    navigate(url, { replace: isSearchPage })
   }
 
-  const handleQueryChange = (value) => {
+  // 3. Event handlers
+  function handleSubmit(event) {
+    event.preventDefault()
+    goToSearch(query, category, sort)
+  }
+
+  function handleQueryChange(event) {
+    const value = event.target.value
     setQuery(value)
-    onQueryChange?.(value)
+
+    // On the results page, update results while typing
+    if (isSearchPage) goToSearch(value, category, sort)
   }
 
-  const handleFilterChange = (value) => {
-    setFilter(value)
-    onFilterChange?.(value)
-    if (!isSearchPage && !isLiveFilter) runSearch({ nextFilter: value })
+  function handleCategoryChange(event) {
+    const value = event.target.value
+    setCategory(value)
+    goToSearch(query, value, sort)
   }
 
-  const handleSortChange = (value) => {
+  function handleSortChange(event) {
+    const value = event.target.value
     setSort(value)
-    onSortChange?.(value)
-    if (!isSearchPage && !isLiveFilter) runSearch({ nextSort: value })
+    goToSearch(query, category, value)
   }
+
+  // 4. What appears on screen
+  const selectStyle =
+    'h-11 w-full rounded-full border border-[#E9E6EA] bg-white px-4 text-sm font-medium text-gray-600 outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-100 sm:w-48'
 
   return (
-    <div className="flex w-full flex-col gap-3">
-      <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
-        <form
-          role="search"
-          onSubmit={(event) => {
-            event.preventDefault()
-            if (!isLiveFilter) runSearch()
-          }}
-          className="relative w-full min-w-0 sm:flex-1"
+    <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
+      {/* Search box */}
+      <form onSubmit={handleSubmit} role="search" className="relative w-full sm:flex-1">
+        <FontAwesomeIcon
+          icon={faMagnifyingGlass}
+          className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+        />
+        <input
+          type="text"
+          value={query}
+          onChange={handleQueryChange}
+          placeholder="Search Product ..."
+          autoComplete="off"
+          className="h-11 w-full rounded-full border border-[#E9E6EA] bg-white pl-11 pr-24 text-sm outline-none placeholder:text-gray-400 focus:border-pink-300 focus:ring-2 focus:ring-pink-100"
+        />
+        <button
+          type="submit"
+          className="absolute right-1.5 top-1/2 h-8 -translate-y-1/2 rounded-full bg-pink-600 px-4 text-sm font-medium text-white hover:bg-pink-700"
         >
-          <FontAwesomeIcon
-            icon={faMagnifyingGlass}
-            aria-hidden="true"
-            className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 sm:h-5 sm:w-5"
-          />
-          <input
-            type="text"
-            name="q"
-            value={query}
-            onChange={(event) => handleQueryChange(event.target.value)}
-            placeholder={placeholder}
-            autoComplete="off"
-            className="h-11 w-full rounded-full border border-[#E9E6EA] bg-white pl-11 pr-24 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-pink-300 focus:ring-2 focus:ring-pink-100 sm:pl-12 sm:pr-28 sm:text-base"
-          />
-          <button
-            type="submit"
-            className="absolute right-1.5 top-1/2 h-8 -translate-y-1/2 cursor-pointer rounded-full bg-pink-600 px-3 text-sm font-medium text-white transition hover:bg-pink-700 sm:px-4"
-          >
-            Search
-          </button>
-        </form>
+          Search
+        </button>
+      </form>
 
-        <div className="flex w-full gap-3 sm:w-auto sm:shrink-0">
-          <PillSelect
-            value={filter}
-            onChange={handleFilterChange}
-            options={FILTERS}
-            label="Filter products"
-          />
+      {/* Category dropdown */}
+      <select
+        value={category}
+        onChange={handleCategoryChange}
+        aria-label="Filter products"
+        className={selectStyle}
+      >
+        <option value="">All Product</option>
+        {categories.map((name) => (
+          <option key={name} value={name}>
+            {name}
+          </option>
+        ))}
+      </select>
 
-          <PillSelect
-            value={sort}
-            onChange={handleSortChange}
-            options={SORT_OPTIONS}
-            label="Sort by"
-            textClassName="text-gray-400"
-          />
-        </div>
-      </div>
+      {/* Sort dropdown */}
+      <select
+        value={sort}
+        onChange={handleSortChange}
+        aria-label="Sort by"
+        className={selectStyle}
+      >
+        {SORT_OPTIONS.map((name) => (
+          <option key={name} value={name}>
+            {name}
+          </option>
+        ))}
+      </select>
     </div>
   )
 }
