@@ -410,7 +410,7 @@ const desktopNotificationRef = useRef(null)
 
             <nav
               aria-label="Admin navigation"
-              className="flex flex-1 flex-col gap-2 overflow-y-auto px-4 py-3"
+              className="flex flex-1 flex-col gap-1 overflow-y-auto p-4"
             >
               {navigation.map(({ label, to, icon: Icon, end }) => (
                 <NavLink
@@ -431,26 +431,7 @@ const desktopNotificationRef = useRef(null)
                 </NavLink>
               ))}
 
-              {/* VIEW STOREFRONT BUTTON */}
-              <Link
-                to="/shop"
-                onClick={() => setMenuOpen(false)}
-                className="mt-3 flex min-h-12 items-center justify-center gap-3 rounded-xl bg-[#e7567e] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#cc4169]"
-              >
-                <FontAwesomeIcon icon={faBagShopping} />
-                View Storefront
-                <ArrowUpRight size={16} />
-              </Link>
-
-              {/* Mobile account shortcut */}
-              <Link
-                to="/admin/settings"
-                onClick={() => setMenuOpen(false)}
-                className="flex min-h-12 items-center gap-4 rounded-xl px-4 text-sm font-medium text-[#5f5359] transition hover:bg-[#f8edf2]"
-              >
-                <UserRound size={19} strokeWidth={1.8} />
-                My Profile & Settings
-              </Link>
+            
             </nav>
 
             <div className="border-t border-[#f0e3e9] p-4">
@@ -483,7 +464,7 @@ const desktopNotificationRef = useRef(null)
       </div>
 
       {/* DESKTOP SIDEBAR */}
-      <aside className="hidden w-60 shrink-0 flex-col border-r border-[#efd8e2] bg-[#fff9fc] md:flex md:min-h-screen">
+      <aside className="hidden w-60 shrink-0 flex-col border-r border-[#efd8e2] bg-[#fff9fc] md:sticky md:top-0 md:flex md:h-screen md:self-start">
         <Link
           to="/admin"
           className="flex h-[76px] shrink-0 items-center border-b border-[#f0e3e9] px-5"
@@ -520,7 +501,7 @@ const desktopNotificationRef = useRef(null)
 
       {/* MAIN CONTENT */}
       <div className="min-w-0 flex-1">
-        <header className="flex min-h-[76px] items-center justify-between gap-3 border-b border-[#f0e3e9] px-4 py-4 sm:px-6 md:px-8">
+        <header className="sticky top-16 z-30 flex min-h-[76px] items-center justify-between gap-3 border-b border-[#f0e3e9] bg-[#fdf0f5] px-4 py-4 sm:px-6 md:top-0 md:bg-[#fbf8f5] md:px-8">
           <div className="min-w-0">
             <h2 className="text-[22px] font-bold leading-tight text-[#4A001F]">
               {title}
@@ -550,6 +531,7 @@ const desktopNotificationRef = useRef(null)
                   </span>
                 )}
               </button>
+              
 
               {notificationOpen && (
                 <NotificationPanel
@@ -559,6 +541,7 @@ const desktopNotificationRef = useRef(null)
                   onClose={() => setNotificationOpen(false)}
                 />
               )}
+        
             </div>
 
             {/* CLICK PROFILE TO OPEN SETTINGS */}
