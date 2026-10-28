@@ -23,18 +23,18 @@ export default function Cart() {
         </p>
 
         {cartItems.length === 0 ? (
-          <div className="rounded-2xl bg-white p-10 text-center shadow-sm">
-            <h2 className="mb-3 text-xl font-semibold">
+          <div className="rounded-2xl p-10 text-center shadow-sm">
+            <h2 className="mb-1 text-xl font-semibold">
               Your cart is empty
             </h2>
 
-            <p className="mb-6 text-gray-500">
+            <p className="mb-2 text-gray-500">
               Discover your favorite skincare products.
             </p>
 
             <Link
               to="/"
-              className="inline-block rounded-full bg-pink-600 px-6 py-3 text-white hover:bg-pink-700"
+              className="inline-block rounded-full bg-[#E7567E] px-6 py-3 text-white hover:bg-pink-400"
             >
               Continue Shopping
             </Link>
