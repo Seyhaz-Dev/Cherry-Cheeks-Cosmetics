@@ -80,7 +80,7 @@ function AppLayout() {
           <Route path="/checkout" element={<RequireAuth><Checkout /></RequireAuth>} />
           <Route path="/profile" element={<RequireAuth><ProFile /></RequireAuth>} />
 
-          <Route path="/orderComfirm" element={<OrderConfirmation />} />
+          <Route path="/order-success" element={<OrderConfirmation />} />
           <Route path="/orderFail" element={<OrderFail />} />
 
           <Route path="/admin" element={<AdminRoute />}>
