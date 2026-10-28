@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
 const inputClass =
   "w-full rounded-xl border border-[#eee4df] bg-[#fbf8f5] px-4 py-3 text-sm outline-none transition placeholder:text-[#b5aaa6] focus:border-[#e94f7d] focus:bg-white focus:ring-4 focus:ring-[#e94f7d]/10";
@@ -136,9 +138,9 @@ function ProFile() {
               </button>
               <button
                 onClick={handleLogout}
-                className="mt-2 w-20 rounded-xl border border-[#eee4df] px-4 py-2 text-left text-sm text-red-500"
+                className="mt-2 flex w-30 items-center justify-between rounded-xl border border-[#eee4df] px-4 py-2 text-left text-sm text-red-500"
               >
-                Logout
+                Logout <FontAwesomeIcon icon={faArrowRightFromBracket} />
               </button>
             </div>
           </div>
