@@ -1,26 +1,72 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import SearchBar from "../components/SearchBar";
 import ProductCard from "../components/ProductCard";
-import { filterProducts, products, sortProducts } from "../data/products";
+import { sortProducts } from "../data/products";
 import categoryImage from "../assets/category1.png";
 
 // How many products show on one page (use 4 when you have more products)
 const PAGE_SIZE = 8;
 
+// Convert category IDs into category names
+const categoryNames = {
+  1: 'Skincare',
+  2: 'Makeup',
+  3: 'Haircare',
+  4: 'Fragrance',
+  5: 'Body Care',
+}
+
 export default function Categories() {
 
   // The page the person is on (starts at page 1)
   const [page, setPage] = useState(1);
+  const [products, setProducts] = useState([]);
 
   // Live search, category filter and sort
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("All Product");
   const [sort, setSort] = useState("Sort: Featured");
 
+  // Load products from teacher's JSON and localStorage
+  useEffect(() => {
+    async function getProducts() {
+      const response = await fetch('/student-data/products.json')
+      const data = await response.json()
+
+      const localProducts = localStorage.getItem('cherry-cheeks-products')
+      const adminProducts = localProducts ? JSON.parse(localProducts) : []
+
+      const adminProductIds = new Set(adminProducts.map(p => p.id))
+      const mergedProducts = [...adminProducts, ...data.filter(p => !adminProductIds.has(p.id))]
+
+      setProducts(mergedProducts)
+    }
+
+    getProducts()
+  }, [])
+
+  const categoryIds = {
+    Skincare: 1,
+    Makeup: 2,
+    Haircare: 3,
+    Fragrance: 4,
+    'Body Care': 5,
+  }
+
   // Products that match the search + filter, then sorted
   const matchingProducts = sortProducts(
-    filterProducts(products, { query, category: filter }),
+    products.filter((product) => {
+      const matchesCategory =
+        filter === 'All Product' ||
+        product.categoryId === categoryIds[filter]
+
+      const matchesSearch = product.name
+        .toLowerCase()
+        .includes(query.toLowerCase())
+
+      return matchesCategory && matchesSearch
+    }),
     sort,
   );
 
@@ -96,7 +142,15 @@ export default function Categories() {
         {visibleProducts.length > 0 ? (
           <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
             {visibleProducts.map((product) => (
-              <ProductCard key={product.id} {...product} category={product.type} />
+              <ProductCard
+                key={product.id}
+                id={product.id}
+                name={product.name}
+                category={categoryNames[product.categoryId] || 'Other'}
+                price={product.price}
+                image={product.image}
+                stockQuantity={product.stockQuantity}
+              />
             ))}
           </div>
         ) : (

@@ -24,7 +24,7 @@ const categoryNames = {
   2: 'Makeup',
   3: 'Haircare',
   4: 'Fragrance',
-  5: 'BodyCare',
+  5: 'Body Care',
 }
 
 const itemsPerPage = 8
@@ -76,7 +76,7 @@ function Shop() {
   Makeup: 2,
   Haircare: 3,
   Fragrance: 4,
-  BodyCare: 5,
+  'Body Care': 5,
   }
 
   const matchingProducts = sortProducts(    //use for sorting filtered product 
@@ -154,6 +154,7 @@ function Shop() {
                     category={categoryNames[product.categoryId] || 'Other'}
                     price={product.price}
                     image={productImage}
+                    stockQuantity={product.stockQuantity}
                   />
                 )
               })}
