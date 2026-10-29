@@ -53,14 +53,22 @@ function Shop() {
 
   useEffect(() => {
     async function getProducts() {
-      const response = await fetch('/student-data/products.json')   //get profuct from json file 
+      // Load from teacher's JSON file
+      const response = await fetch('/student-data/products.json')
       const data = await response.json()
-      // console.log(data)
 
-      setProducts(data)     //store product in state and update page
+      // Also load any products added via admin (from localStorage)
+      const localProducts = localStorage.getItem('cherry-cheeks-products')
+      const adminProducts = localProducts ? JSON.parse(localProducts) : []
+
+      // Merge: admin products first, then teacher's products (avoiding duplicates by ID)
+      const adminProductIds = new Set(adminProducts.map(p => p.id))
+      const mergedProducts = [...adminProducts, ...data.filter(p => !adminProductIds.has(p.id))]
+
+      setProducts(mergedProducts)
     }
 
-    getProducts()     //call the function to load the product 
+    getProducts()
   }, [])
 
   const categoryIds = {
@@ -121,6 +129,9 @@ function Shop() {
             onQueryChange={handleQueryChange}
             onFilterChange={handleFilterChange}
             onSortChange={handleSortChange}
+            initialQuery={query}
+            initialCategory={filter}
+            initialSort={sort}
           />
         </div>
 
@@ -128,16 +139,24 @@ function Shop() {
           {visibleProducts.length > 0 ? (
             <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
               
-              {visibleProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  name={product.name}
-                  category={categoryNames[product.categoryId] || 'Other'}
-                  price={product.price}
-                  image={productImages[product.id]}
-                />
-              ))}
+              {visibleProducts.map((product) => {
+                // Use product image if it exists (base64 or URL), otherwise use hardcoded mapping or default
+                let productImage = productImages[product.id] || cleanserImage
+                if (product.image) {
+                  productImage = product.image
+                }
+
+                return (
+                  <ProductCard
+                    key={product.id}
+                    id={product.id}
+                    name={product.name}
+                    category={categoryNames[product.categoryId] || 'Other'}
+                    price={product.price}
+                    image={productImage}
+                  />
+                )
+              })}
 
             </div>
           ) : (
