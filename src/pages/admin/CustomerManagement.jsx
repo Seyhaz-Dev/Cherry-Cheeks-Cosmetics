@@ -294,14 +294,14 @@ export default function CustomerManagement() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by name, email, or ID..."
-              className="w-full rounded-md border border-[#e6d3dc] py-2 pl-9 pr-3 text-sm outline-none focus:border-[#e0568a]"
+              className="w-full rounded-full border border-[#e6d3dc] py-2 pl-9 pr-3 text-sm outline-none focus:border-[#e0568a]"
             />
           </div>
           <div className="flex gap-2">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-md border border-[#e6d3dc] bg-white px-3 py-2 text-sm outline-none focus:border-[#e0568a]"
+              className="rounded-full border border-[#e6d3dc] bg-white px-3 py-2 text-sm outline-none focus:border-[#e0568a]"
             >
               <option value="all">All statuses</option>
               <option value="Active">Active</option>
@@ -311,7 +311,7 @@ export default function CustomerManagement() {
             <select
               value={tierFilter}
               onChange={(e) => setTierFilter(e.target.value)}
-              className="rounded-md border border-[#e6d3dc] bg-white px-3 py-2 text-sm outline-none focus:border-[#e0568a]"
+              className="rounded-full border border-[#e6d3dc] bg-white px-3 py-2 text-sm outline-none focus:border-[#e0568a]"
             >
               <option value="all">All tiers</option>
               <option value="Bronze">Bronze</option>
@@ -324,36 +324,34 @@ export default function CustomerManagement() {
 
         {/* Table */}
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[580px] text-left text-sm">
-            <thead className="text-[#5f5359] border-b border-[#f0e3e9]">
+          <table className="w-full min-w-[480px] text-left text-sm">
+            <thead className="text-[#5f5359]">
               <tr>
                 <th className="py-3 pr-4 font-medium">Customer</th>
                 <th className="hidden px-4 py-3 font-medium md:table-cell">Contact</th>
                 <th className="hidden px-4 py-3 font-medium sm:table-cell">Orders</th>
                 <th className="px-4 py-3 font-medium">Total Spent</th>
-                <th className="px-4 py-3 font-medium">Tier</th>
-                <th className="hidden px-4 py-3 font-medium sm:table-cell">Status</th>
-                <th className="py-3 pl-4 font-medium text-right">Actions</th>
+                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="py-3 pl-4 font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
               {visibleCustomers.map((c) => {
                 const statusBadge = STATUS[c.status] || { label: c.status, className: 'bg-gray-100 text-gray-700' }
-                const tierBadge = TIERS[c.tier] || { label: c.tier, className: 'bg-gray-100 text-gray-700' }
 
                 return (
-                  <tr key={c.id} className="border-t border-[#f0e3e9] hover:bg-gray-50/50 transition-colors">
+                  <tr key={c.id} className="border-t border-[#f0e3e9]">
                     <td className="py-3 pr-4">
                       <div className="flex items-center gap-3">
                         {c.avatar ? (
-                          <img src={c.avatar} alt={c.name} className="size-10 rounded-full object-cover" />
+                          <img src={c.avatar} alt={c.name} className="size-10 rounded-lg object-cover" />
                         ) : (
-                          <div className="flex size-10 items-center justify-center rounded-full bg-[#fbe3ee] text-[#e0568a] font-semibold">
+                          <div className="flex size-10 items-center justify-center rounded-lg bg-[#fbe3ee] text-[#e0568a] font-semibold">
                             {c.name.charAt(0)}
                           </div>
                         )}
                         <div>
-                          <p className="font-semibold text-slate-900">{c.name}</p>
+                          <p className="font-semibold">{c.name}</p>
                           <p className="text-xs text-[#82757b]">{c.id}</p>
                         </div>
                       </div>
@@ -370,24 +368,18 @@ export default function CustomerManagement() {
                       </div>
                     </td>
 
-                    <td className="hidden px-4 py-3 text-[#82757b] sm:table-cell">{c.totalOrders} orders</td>
+                    <td className="hidden px-4 py-3 sm:table-cell">{c.totalOrders} orders</td>
 
-                    <td className="px-4 py-3 font-semibold text-slate-900">${Number(c.totalSpent).toFixed(2)}</td>
+                    <td className="px-4 py-3 font-semibold">${Number(c.totalSpent).toFixed(2)}</td>
 
                     <td className="px-4 py-3">
-                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${tierBadge.className}`}>
-                        {tierBadge.label}
-                      </span>
-                    </td>
-
-                    <td className="hidden px-4 py-3 sm:table-cell">
                       <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusBadge.className}`}>
                         {statusBadge.label}
                       </span>
                     </td>
 
-                    <td className="py-3 pl-4 text-right">
-                      <div className="flex items-center justify-end gap-1 text-[#e0568a]">
+                    <td className="py-3 pl-4">
+                      <div className="flex items-center gap-1 text-[#e0568a]">
                         <button type="button" aria-label="Edit" onClick={() => openEditForm(c)} className="rounded-md p-2 hover:bg-[#fff0f6]">
                           <Pencil size={15} />
                         </button>

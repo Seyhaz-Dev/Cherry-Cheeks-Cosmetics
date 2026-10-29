@@ -13,7 +13,7 @@ const SORT_OPTIONS = [
   'Newest',
 ]
 
-function SearchBar() {
+function SearchBar({ onQueryChange, onFilterChange, onSortChange, initialQuery = '', initialCategory = '', initialSort = DEFAULT_SORT }) {
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams] = useSearchParams()
@@ -21,10 +21,16 @@ function SearchBar() {
   // Are we already on the search results page?
   const isSearchPage = location.pathname === '/search'
 
-  // Start with the values from the URL (empty category = all products)
-  const [query, setQuery] = useState(searchParams.get('q') || '')
-  const [category, setCategory] = useState(searchParams.get('category') || '')
-  const [sort, setSort] = useState(searchParams.get('sort') || DEFAULT_SORT)
+  // If props are provided, use controlled mode. Otherwise use internal state with URL params.
+  const controlled = onQueryChange !== undefined
+
+  const [internalQuery, setInternalQuery] = useState(searchParams.get('q') || initialQuery)
+  const [internalCategory, setInternalCategory] = useState(searchParams.get('category') || initialCategory)
+  const [internalSort, setInternalSort] = useState(searchParams.get('sort') || initialSort)
+
+  const query = controlled ? initialQuery : internalQuery
+  const category = controlled ? initialCategory : internalCategory
+  const sort = controlled ? initialSort : internalSort
 
   // Category names (starts with defaults, replaced by the JSON file)
   const [categories, setCategories] = useState([  ])
@@ -63,27 +69,43 @@ function SearchBar() {
   // 3. Event handlers
   function handleSubmit(event) {
     event.preventDefault()
-    goToSearch(query, category, sort)
+    if (controlled) {
+      // In controlled mode, just trigger the query change
+      onQueryChange(query)
+    } else {
+      goToSearch(query, category, sort)
+    }
   }
 
   function handleQueryChange(event) {
     const value = event.target.value
-    setQuery(value)
-
-    // On the results page, update results while typing
-    if (isSearchPage) goToSearch(value, category, sort)
+    if (controlled) {
+      onQueryChange(value)
+    } else {
+      setInternalQuery(value)
+      // On the results page, update results while typing
+      if (isSearchPage) goToSearch(value, category, sort)
+    }
   }
 
   function handleCategoryChange(event) {
     const value = event.target.value
-    setCategory(value)
-    goToSearch(query, value, sort)
+    if (controlled) {
+      onFilterChange(value)
+    } else {
+      setInternalCategory(value)
+      goToSearch(query, value, sort)
+    }
   }
 
   function handleSortChange(event) {
     const value = event.target.value
-    setSort(value)
-    goToSearch(query, category, value)
+    if (controlled) {
+      onSortChange(value)
+    } else {
+      setInternalSort(value)
+      goToSearch(query, category, value)
+    }
   }
 
   // 4. What appears on screen

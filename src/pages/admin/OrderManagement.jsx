@@ -187,13 +187,13 @@ export default function OrderManagement() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by ID or customer..."
-              className="w-full rounded-md border border-[#e6d3dc] py-2 pl-9 pr-3 text-sm outline-none focus:border-[#e0568a]"
+              className="w-full rounded-full border border-[#e6d3dc] py-2 pl-9 pr-3 text-sm outline-none focus:border-[#e0568a]"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-md border border-[#e6d3dc] bg-white px-3 py-2 text-sm outline-none focus:border-[#e0568a]"
+            className="rounded-full border border-[#e6d3dc] bg-white px-3 py-2 text-sm outline-none focus:border-[#e0568a]"
           >
             <option value="all">All statuses</option>
             <option value="Pending">Pending</option>
@@ -204,17 +204,15 @@ export default function OrderManagement() {
 
         {/* Table View */}
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[520px] text-left text-sm">
-            <thead className="text-[#5f5359] border-b border-[#f0e3e9]">
+          <table className="w-full min-w-[480px] text-left text-sm">
+            <thead className="text-[#5f5359]">
               <tr>
-                <th className="py-3 pr-4 font-medium">Order ID</th>
-                <th className="px-4 py-3 font-medium">Customer</th>
+                <th className="py-3 pr-4 font-medium">Order</th>
                 <th className="hidden px-4 py-3 font-medium md:table-cell">Date</th>
                 <th className="hidden px-4 py-3 font-medium sm:table-cell">Items</th>
                 <th className="px-4 py-3 font-medium">Total</th>
-                <th className="hidden px-4 py-3 font-medium md:table-cell">Payment</th>
                 <th className="px-4 py-3 font-medium">Status</th>
-                <th className="py-3 pl-4 font-medium text-right">Actions</th>
+                <th className="py-3 pl-4 font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -222,25 +220,23 @@ export default function OrderManagement() {
                 const statusBadge = STATUS[o.status] || { label: o.status, className: 'bg-gray-100 text-gray-700' }
 
                 return (
-                  <tr key={o.id} className="border-t border-[#f0e3e9] hover:bg-gray-50/50 transition-colors">
-                    <td className="py-3 pr-4 font-semibold text-slate-800">{o.id}</td>
-                    <td className="px-4 py-3 font-medium text-slate-900">{o.customer}</td>
-                    <td className="hidden px-4 py-3 text-[#82757b] md:table-cell">{o.date}</td>
-                    <td className="hidden px-4 py-3 text-[#82757b] sm:table-cell">{o.items}</td>
-                    <td className="px-4 py-3 font-semibold text-slate-900">${Number(o.total).toFixed(2)}</td>
-                    <td className="hidden px-4 py-3 md:table-cell">
-                      <div className="flex items-center gap-1.5">
-                        <span className={`h-1.5 w-1.5 rounded-full ${o.payment === 'Paid' ? 'bg-emerald-500' : 'bg-red-400'}`}></span>
-                        <span className="text-slate-600">{o.payment}</span>
+                  <tr key={o.id} className="border-t border-[#f0e3e9]">
+                    <td className="py-3 pr-4">
+                      <div>
+                        <p className="font-semibold">{o.id}</p>
+                        <p className="text-xs text-[#82757b]">{o.customer} · {o.payment}</p>
                       </div>
                     </td>
+                    <td className="hidden px-4 py-3 md:table-cell">{o.date}</td>
+                    <td className="hidden px-4 py-3 sm:table-cell">{o.items}</td>
+                    <td className="px-4 py-3 font-semibold">${Number(o.total).toFixed(2)}</td>
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusBadge.className}`}>
                         {statusBadge.label}
                       </span>
                     </td>
-                    <td className="py-3 pl-4 text-right">
-                      <div className="flex items-center justify-end gap-1 text-[#e0568a]">
+                    <td className="py-3 pl-4">
+                      <div className="flex items-center gap-1 text-[#e0568a]">
                         <button type="button" aria-label="Edit" onClick={() => openEditForm(o)} className="rounded-md p-2 hover:bg-[#fff0f6]">
                           <Pencil size={15} />
                         </button>
