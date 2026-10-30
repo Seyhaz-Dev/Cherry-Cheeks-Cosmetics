@@ -34,7 +34,7 @@ export default function Cart() {
 
             <Link
               to="/"
-              className="inline-block rounded-full bg-[#E7567E] px-6 py-3 text-white hover:bg-pink-400"
+              className="inline-block rounded-full bg-[#E7567E] px-6 py-3 !text-white hover:bg-pink-400"
             >
               Continue Shopping
             </Link>
