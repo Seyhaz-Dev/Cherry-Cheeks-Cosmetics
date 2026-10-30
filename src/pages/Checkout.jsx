@@ -1,44 +1,30 @@
-
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext";
-
-import abaLogo from "../assets/aba.png";
-import acledaLogo from "../assets/acleda.png";
-import bakongLogo from "../assets/bakong.png";
-import visaLogo from "../assets/visa.png";
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useCart } from '../context/CartContext'
+import { useCustomers } from '../context/CustomerContext'
+import { useOrders } from '../context/OrderContext'
 
 const PAYMENT_METHODS = [
   {
-    id: "aba",
-    name: "ABA Bank",
-    description: "Pay using ABA mobile banking",
-    logo: abaLogo,
+    id: 'aba',
+    name: 'ABA Pay',
+    description: 'Pay using ABA Mobile.',
+    logo: '',
   },
   {
-    id: "acleda",
-    name: "ACLEDA Bank",
-    description: "Pay using ACLEDA mobile banking",
-    logo: acledaLogo,
+    id: 'cash',
+    name: 'Cash on Delivery',
+    description: 'Pay when your order arrives.',
+    logo: '',
   },
-  {
-    id: "bakong",
-    name: "Bakong",
-    description: "Pay using Bakong",
-    logo: bakongLogo,
-  },
-  {
-    id: "visa",
-    name: "VISA",
-    description: "Pay using your Visa card",
-    logo: visaLogo,
-  },
-];
+]
 
 export default function Checkout() {
   const navigate = useNavigate();
 
   const { cartItems = [], subtotal, clearCart } = useCart();
+  const { addOrder } = useOrders();
+  const { recordOrder } = useCustomers();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -112,6 +98,26 @@ export default function Checkout() {
     };
 
     try {
+      // Send the order to Order Management (admin page)
+      const adminOrder = addOrder({
+        customer: formData.fullName,
+        cartItems: cartItems.map((item) => ({
+          name: getProductName(item),
+          price: getProductPrice(item),
+          quantity: getProductQuantity(item),
+        })),
+        total,
+        payment: "Unpaid",
+      });
+
+      // Add or update the customer in Customer Management (admin page)
+      recordOrder({
+        name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        total,
+      });
+
       const existingOrders = JSON.parse(
         localStorage.getItem("cherryCheeksOrders") || "[]"
       );
@@ -121,9 +127,9 @@ export default function Checkout() {
         JSON.stringify([...existingOrders, newOrder])
       );
 
-      // Navigate to your teammate's successful order page.
+      // Navigate to the successful order page.
       navigate("/order-success", {
-        state: { order: newOrder },
+        state: { order: newOrder, orderId: adminOrder.id },
       });
 
       // Clear the cart after successfully saving the order.
@@ -135,7 +141,7 @@ export default function Checkout() {
       alert("Unable to save your order. Please try again.");
     }
   };
-
+  
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
@@ -379,7 +385,7 @@ export default function Checkout() {
                       />
 
                       <div className="flex h-12 w-20 shrink-0 items-center justify-center">
-                        {!logoErrors[method.id] ? (
+                        {method.logo && !logoErrors[method.id] ? (
                           <img
                             src={method.logo}
                             alt={`${method.name} logo`}

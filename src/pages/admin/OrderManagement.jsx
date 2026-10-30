@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
-import { AlertTriangle, CheckCircle2, Clock, Database, MoreHorizontal, Package, Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { useOrders } from '../../context/OrderContext'
+import { CheckCircle2, Clock, Database, MoreHorizontal, Package, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 
 // Map order status to color pill styling
 const STATUS = {
@@ -7,15 +8,6 @@ const STATUS = {
   Pending: { label: 'Pending', className: 'bg-[#fde8b5] text-[#8a5a00]' },
   Completed: { label: 'Completed', className: 'bg-[#b9f3c9] text-[#1f6b3a]' },
 }
-
-// Initial fallback mock data
-const INITIAL_ORDERS = [
-  { id: 'LB-101', customer: 'Olivia Bennett', date: 'Oct 05, 2026', items: '3 Items', total: 128.4, payment: 'Paid', status: 'Processing' },
-  { id: 'LB-102', customer: 'Ethan Reynolds', date: 'Oct 06, 2026', items: '1 Item', total: 45.0, payment: 'Paid', status: 'Pending' },
-  { id: 'LB-103', customer: 'Sophia Martinez', date: 'Oct 06, 2026', items: '5 Items', total: 310.2, payment: 'Paid', status: 'Completed' },
-  { id: 'LB-104', customer: 'Liam Johnson', date: 'Oct 07, 2026', items: '2 Items', total: 89.99, payment: 'Unpaid', status: 'Pending' },
-  { id: 'LB-105', customer: 'Ava White', date: 'Oct 08, 2026', items: '4 Items', total: 210.5, payment: 'Paid', status: 'Processing' },
-]
 
 // Empty form template for reset/creation
 const EMPTY_FORM = { customer: '', items: '1 Item', total: '', payment: 'Paid', status: 'Pending' }
@@ -39,10 +31,8 @@ function StatCard({ label, value, icon: Icon, color }) {
 }
 
 export default function OrderManagement() {
-  // Orders list state
-  const [orders, setOrders] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [loadError, setLoadError] = useState('')
+  // Orders now come from the shared OrderContext
+  const { orders, addOrder, updateOrder, deleteOrder } = useOrders()
 
   // Search & Filter state
   const [search, setSearch] = useState('')
@@ -55,24 +45,6 @@ export default function OrderManagement() {
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
   const [formError, setFormError] = useState('')
-
-  // Fetch initial orders or fallback to default array
-  useEffect(() => {
-    fetch('/data/orders.json')
-      .then((res) => {
-        if (!res.ok) throw new Error('File not found')
-        return res.json()
-      })
-      .then((data) => {
-        setOrders(data)
-        setLoading(false)
-      })
-      .catch(() => {
-        // Fallback to local array if json is not placed in public folder
-        setOrders(INITIAL_ORDERS)
-        setLoading(false)
-      })
-  }, [])
 
   // Stat computations
   const totalOrders = orders.length
@@ -134,21 +106,24 @@ export default function OrderManagement() {
     }
 
     if (editingId) {
-      setOrders(orders.map((o) => (o.id === editingId ? { ...o, ...values } : o)))
+      updateOrder(editingId, values)
     } else {
-      const newOrder = {
-        id: `#LB-${Math.floor(100 + Math.random() * 900)}`,
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
-        ...values,
-      }
-      setOrders([newOrder, ...orders])
+      // Manual order created by admin
+      const newOrder = addOrder({
+        customer: values.customer,
+        cartItems: [],
+        total: values.total,
+        payment: values.payment,
+      })
+      // addOrder defaults to "Pending" and "0 Items", so apply the form's values
+      updateOrder(newOrder.id, { status: values.status, items: values.items })
     }
 
     closeForm()
   }
 
   const confirmDelete = () => {
-    setOrders(orders.filter((o) => o.id !== orderToDelete.id))
+    deleteOrder(orderToDelete.id)
     setOrderToDelete(null)
   }
 
@@ -254,9 +229,7 @@ export default function OrderManagement() {
             </tbody>
           </table>
 
-          {loading && <p className="py-10 text-center text-sm text-[#82757b]">Loading orders...</p>}
-          {loadError && <p className="py-10 text-center text-sm text-[#a9365b]">{loadError}</p>}
-          {!loading && !loadError && visibleOrders.length === 0 && (
+          {visibleOrders.length === 0 && (
             <p className="py-10 text-center text-sm text-[#82757b]">No orders found.</p>
           )}
         </div>
@@ -371,6 +344,19 @@ export default function OrderManagement() {
                 <dt className="text-[#82757b]">Total Amount</dt>
                 <dd className="font-semibold text-slate-900">${Number(orderToView.total).toFixed(2)}</dd>
               </div>
+
+              {/* Purchased products (only for orders placed through Checkout) */}
+              {orderToView.lineItems?.length > 0 && (
+                <div className="py-2.5">
+                  <dt className="text-[#82757b]">Products</dt>
+                  {orderToView.lineItems.map((li, i) => (
+                    <dd key={i} className="mt-1 flex justify-between font-medium">
+                      <span>{li.name} × {li.quantity}</span>
+                      <span>${(li.price * li.quantity).toFixed(2)}</span>
+                    </dd>
+                  ))}
+                </div>
+              )}
             </dl>
 
             <div className="mt-6 flex justify-end gap-2">

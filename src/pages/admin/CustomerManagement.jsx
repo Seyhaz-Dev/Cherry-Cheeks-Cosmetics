@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useCustomers } from '../../context/CustomerContext'
 import {
   AlertTriangle,
-  Award,
   Crown,
-  Database,
   Mail,
   MoreHorizontal,
   Pencil,
   Phone,
-  Plus,
   Search,
   Trash2,
   UserCheck,
@@ -30,70 +28,6 @@ const TIERS = {
   Gold: { label: 'Gold', className: 'bg-[#fef3c7] text-[#92400e]' },
   Platinum: { label: 'Platinum', className: 'bg-[#e0e7ff] text-[#3730a3]' }
 }
-
-// Initial fallback mock data
-const INITIAL_CUSTOMERS = [
-  {
-    id: 'CUST-101',
-    name: 'Olivia Bennett',
-    email: 'olivia.b@example.com',
-    phone: '+1 (555) 234-5678',
-    totalOrders: 14,
-    totalSpent: 1280.40,
-    tier: 'Platinum',
-    status: 'Active',
-    joinedDate: 'Jan 12, 2025',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80'
-  },
-  {
-    id: 'CUST-102',
-    name: 'Ethan Reynolds',
-    email: 'e.reynolds@example.com',
-    phone: '+1 (555) 876-5432',
-    totalOrders: 3,
-    totalSpent: 145.00,
-    tier: 'Bronze',
-    status: 'Active',
-    joinedDate: 'Mar 04, 2025',
-    avatar: ''
-  },
-  {
-    id: 'CUST-103',
-    name: 'Sophia Martinez',
-    email: 'sophia.m@example.com',
-    phone: '+1 (555) 345-6789',
-    totalOrders: 28,
-    totalSpent: 3410.20,
-    tier: 'Gold',
-    status: 'Active',
-    joinedDate: 'Nov 18, 2024',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
-  },
-  {
-    id: 'CUST-104',
-    name: 'Liam Johnson',
-    email: 'ljohnson@example.com',
-    phone: '+1 (555) 987-6543',
-    totalOrders: 1,
-    totalSpent: 49.99,
-    tier: 'Bronze',
-    status: 'Inactive',
-    joinedDate: 'Jun 22, 2025',
-    avatar: ''
-  },
-  {
-    id: 'CUST-105',
-    name: 'Ava White',
-    email: 'ava.white@example.com',
-    phone: '+1 (555) 456-7890',
-    totalOrders: 8,
-    totalSpent: 620.50,
-    tier: 'Silver',
-    status: 'Pending',
-    joinedDate: 'Sep 05, 2025',
-    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80'
-  }
-]
 
 // Empty form template for resets
 const EMPTY_FORM = {
@@ -124,9 +58,8 @@ function StatCard({ label, value, icon: Icon, color }) {
 }
 
 export default function CustomerManagement() {
-  const [customers, setCustomers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [loadError, setLoadError] = useState('')
+  // Customers now come from the shared CustomerContext
+  const { customers, updateCustomer, deleteCustomer } = useCustomers()
 
   // Search & Filter state
   const [search, setSearch] = useState('')
@@ -140,23 +73,6 @@ export default function CustomerManagement() {
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
   const [formError, setFormError] = useState('')
-
-  // Load initial customers or fall back
-  useEffect(() => {
-    fetch('/data/customers.json')
-      .then((res) => {
-        if (!res.ok) throw new Error('File not found')
-        return res.json()
-      })
-      .then((data) => {
-        setCustomers(data)
-        setLoading(false)
-      })
-      .catch(() => {
-        setCustomers(INITIAL_CUSTOMERS)
-        setLoading(false)
-      })
-  }, [])
 
   // Dynamic calculations for stat cards
   const totalCustomers = customers.length
@@ -193,13 +109,6 @@ export default function CustomerManagement() {
       setForm((oldForm) => ({ ...oldForm, avatar: reader.result }))
     }
     reader.readAsDataURL(file)
-  }
-
-  const openAddForm = () => {
-    setEditingId(null)
-    setForm(EMPTY_FORM)
-    setFormError('')
-    setShowForm(true)
   }
 
   const openEditForm = (c) => {
@@ -240,22 +149,13 @@ export default function CustomerManagement() {
       avatar: form.avatar
     }
 
-    if (editingId) {
-      setCustomers(customers.map((c) => (c.id === editingId ? { ...c, ...values } : c)))
-    } else {
-      const newCustomer = {
-        id: `CUST-${Math.floor(100 + Math.random() * 900)}`,
-        joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
-        ...values
-      }
-      setCustomers([newCustomer, ...customers])
-    }
+    updateCustomer(editingId, values)
 
     closeForm()
   }
 
   const confirmDelete = () => {
-    setCustomers(customers.filter((c) => c.id !== customerToDelete.id))
+    deleteCustomer(customerToDelete.id)
     setCustomerToDelete(null)
   }
 
@@ -276,14 +176,6 @@ export default function CustomerManagement() {
             <h2 className="text-lg font-semibold text-slate-900">Customers</h2>
             <p className="text-sm text-[#82757b]">Total {customers.length} registered customers</p>
           </div>
-          <button
-            type="button"
-            onClick={openAddForm}
-            className="flex items-center gap-1.5 rounded-full bg-[#e0568a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#cc4a7b] transition-colors"
-          >
-            <Plus size={16} />
-            Add Customer
-          </button>
         </div>
 
         {/* Toolbar */}
@@ -397,9 +289,7 @@ export default function CustomerManagement() {
             </tbody>
           </table>
 
-          {loading && <p className="py-10 text-center text-sm text-[#82757b]">Loading customers...</p>}
-          {loadError && <p className="py-10 text-center text-sm text-[#a9365b]">{loadError}</p>}
-          {!loading && !loadError && visibleCustomers.length === 0 && (
+          {visibleCustomers.length === 0 && (
             <p className="py-10 text-center text-sm text-[#82757b]">No customers found.</p>
           )}
         </div>
@@ -409,7 +299,7 @@ export default function CustomerManagement() {
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="max-h-full w-full max-w-md overflow-y-auto rounded-xl bg-white p-6 shadow-xl">
-            <h2 className="text-lg font-semibold">{editingId ? 'Edit Customer' : 'Add Customer'}</h2>
+            <h2 className="text-lg font-semibold">Edit Customer</h2>
 
             <div className="mt-4 space-y-4">
               <label className="block text-sm font-medium text-[#5f5359]">
@@ -481,7 +371,7 @@ export default function CustomerManagement() {
                 Cancel
               </button>
               <button type="button" onClick={handleSave} className="rounded-full bg-[#e0568a] px-5 py-2 text-sm font-medium text-white hover:bg-[#cc4a7b]">
-                {editingId ? 'Save changes' : 'Save customer'}
+                Save changes
               </button>
             </div>
           </div>

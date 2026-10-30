@@ -5,6 +5,8 @@ import Footer from './components/Footer'
 import { CartProvider } from './context/CartContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import AdminLayout from './layouts/AdminLayout'
+import { OrderProvider } from './context/OrderContext'
+import { CustomerProvider } from './context/CustomerContext'
 
 import Home from './pages/Home'
 import About from './pages/About'
@@ -103,7 +105,11 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <CartProvider>
-          <AppLayout />
+          <CustomerProvider>
+            <OrderProvider>
+              <AppLayout />
+            </OrderProvider>
+          </CustomerProvider>
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>
