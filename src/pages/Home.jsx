@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
 import ProductCard from "../components/ProductCard";
 
 import heroImage from "../assets/hero1.png";
@@ -172,19 +173,21 @@ export default function Home() {
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <a
-              href="/shop"
-              className="inline-flex items-center justify-center rounded-full bg-[#e94f7d] px-7 py-3 text-sm font-medium text-white transition hover:bg-[#d93d6c]"
-            >
-              Shop Now ↗
-            </a>
-
-            <a
+             <a
               href="/about"
               className="inline-flex items-center justify-center rounded-full border border-[#e7dcd6] px-6 py-3 text-sm font-medium transition hover:bg-white"
             >
               Our Story
             </a>
+
+            <a
+              href="/shop"
+              className="inline-flex items-center justify-center rounded-full bg-[#e94f7d] px-7 py-3 text-sm font-medium !text-white transition hover:bg-[#d93d6c]"
+            >
+              <span className="!text-white">Shop Now</span>
+            </a>
+
+           
           </div>
 
           <div className="mt-7 flex flex-wrap gap-x-5 gap-y-3 text-xs text-[#817874] sm:text-sm">

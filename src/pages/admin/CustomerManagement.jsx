@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useCustomers } from '../../context/CustomerContext'
 import {
   AlertTriangle,
+  ChevronLeft,
+  ChevronRight,
   Crown,
   Mail,
   MoreHorizontal,
@@ -42,6 +44,7 @@ const EMPTY_FORM = {
 }
 
 const inputClass = 'mt-1 w-full rounded-md border border-[#e6d3dc] px-3 py-2 text-sm outline-none focus:border-[#e0568a]'
+const customersPerPage = 5
 
 function StatCard({ label, value, icon: Icon, color }) {
   return (
@@ -65,6 +68,7 @@ export default function CustomerManagement() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [tierFilter, setTierFilter] = useState('all')
+  const [currentPage, setCurrentPage] = useState(1)
 
   // Modals & Action state
   const [customerToDelete, setCustomerToDelete] = useState(null)
@@ -94,6 +98,13 @@ export default function CustomerManagement() {
 
     return matchesSearch && matchesStatus && matchesTier
   })
+
+  const totalPages = Math.max(1, Math.ceil(visibleCustomers.length / customersPerPage))
+  const page = Math.min(currentPage, totalPages)
+  const startIndex = (page - 1) * customersPerPage
+  const pageCustomers = visibleCustomers.slice(startIndex, startIndex + customersPerPage)
+  const firstShown = visibleCustomers.length === 0 ? 0 : startIndex + 1
+  const lastShown = startIndex + pageCustomers.length
 
   // Handlers
   const handleChange = (e) => {
@@ -184,7 +195,7 @@ export default function CustomerManagement() {
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#82757b]" />
             <input
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => { setSearch(e.target.value); setCurrentPage(1) }}
               placeholder="Search by name, email, or ID..."
               className="w-full rounded-full border border-[#e6d3dc] py-2 pl-9 pr-3 text-sm outline-none focus:border-[#e0568a]"
             />
@@ -192,7 +203,7 @@ export default function CustomerManagement() {
           <div className="flex gap-2">
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1) }}
               className="rounded-full border border-[#e6d3dc] bg-white px-3 py-2 text-sm outline-none focus:border-[#e0568a]"
             >
               <option value="all">All statuses</option>
@@ -202,7 +213,7 @@ export default function CustomerManagement() {
             </select>
             <select
               value={tierFilter}
-              onChange={(e) => setTierFilter(e.target.value)}
+              onChange={(e) => { setTierFilter(e.target.value); setCurrentPage(1) }}
               className="rounded-full border border-[#e6d3dc] bg-white px-3 py-2 text-sm outline-none focus:border-[#e0568a]"
             >
               <option value="all">All tiers</option>
@@ -228,7 +239,7 @@ export default function CustomerManagement() {
               </tr>
             </thead>
             <tbody>
-              {visibleCustomers.map((c) => {
+              {pageCustomers.map((c) => {
                 const statusBadge = STATUS[c.status] || { label: c.status, className: 'bg-gray-100 text-gray-700' }
 
                 return (
@@ -292,6 +303,48 @@ export default function CustomerManagement() {
           {visibleCustomers.length === 0 && (
             <p className="py-10 text-center text-sm text-[#82757b]">No customers found.</p>
           )}
+        </div>
+
+        <div className="mt-4 flex flex-col items-center justify-between gap-3 text-xs text-[#82757b] sm:flex-row">
+          <p>Showing {firstShown}–{lastShown} of {visibleCustomers.length}</p>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setCurrentPage(page - 1)}
+              disabled={page === 1}
+              aria-label="Previous page"
+              className="flex size-8 items-center justify-center rounded-md border border-[#e6d3dc] hover:bg-[#f8edf2] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <ChevronLeft size={14} />
+            </button>
+
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map((number) => (
+              <button
+                key={number}
+                type="button"
+                onClick={() => setCurrentPage(number)}
+                aria-current={number === page ? 'page' : undefined}
+                className={`flex size-8 items-center justify-center rounded-md border text-sm ${
+                  number === page
+                    ? 'border-[#e0568a] bg-[#e0568a] text-white'
+                    : 'border-[#e6d3dc] text-[#30252a] hover:bg-[#f8edf2]'
+                }`}
+              >
+                {number}
+              </button>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => setCurrentPage(page + 1)}
+              disabled={page === totalPages}
+              aria-label="Next page"
+              className="flex size-8 items-center justify-center rounded-md border border-[#e6d3dc] hover:bg-[#f8edf2] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
         </div>
       </section>
 

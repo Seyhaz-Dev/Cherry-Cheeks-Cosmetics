@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import ProductCard from "../components/ProductCard";
 import { sortProducts } from "../data/products";
-import categoryImage from "../assets/category1.png";
+import { ArrowRight } from "lucide-react";
 
 // How many products show on one page (use 4 when you have more products)
 const PAGE_SIZE = 8;
@@ -25,7 +25,7 @@ export default function Categories() {
 
   // Live search, category filter and sort
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState("All Product");
+  const [filter, setFilter] = useState("");
   const [sort, setSort] = useState("Sort: Featured");
 
   // Load products from teacher's JSON and localStorage
@@ -58,7 +58,7 @@ export default function Categories() {
   const matchingProducts = sortProducts(
     products.filter((product) => {
       const matchesCategory =
-        filter === 'All Product' ||
+      !filter || 
         product.categoryId === categoryIds[filter]
 
       const matchesSearch = product.name
@@ -101,38 +101,18 @@ export default function Categories() {
 
   return (
     <main className="overflow-hidden bg-[#fbf8f5] font-['Outfit',sans-serif] text-[#292524]">
-      <section className="mx-auto grid max-w-7xl items-center gap-9 px-5 pb-12 pt-10 sm:px-8 md:grid-cols-2 md:gap-14 md:pb-16 md:pt-16">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#89565a] sm:text-sm">
-            Beauty & Skincare
-          </p>
-          <h1 className="mt-2 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-            Skincare <span className="text-[#e94f7d]">Routine</span>
-          </h1>
-          <p className="mt-2 max-w-lg text-sm leading-7 text-[#817874] sm:text-base">
-            Find your favorite beauty products, from skincare to makeup, <br /> all in one place.
-          </p>
-          <a
-            href="#products"
-            className="mt-2 inline-flex items-center justify-center rounded-full bg-[#e94f7d] px-7 py-3 text-sm font-medium text-white transition-colors duration-300 hover:bg-[#d93d6c]"
-          >
-            Explore the collection 
-          </a>
-          
-        </div>
-        <img
-          src={categoryImage}
-          alt="Cherry Cheeks skincare collection"
-          className="aspect-[5/4] w-full rounded-[28px] object-cover sm:rounded-[36px]"
-        />
-      </section>
-
+    
       <section
         id="products"
         className="mx-auto max-w-7xl scroll-mt-20 px-5 py-12 sm:px-8 md:py-16">
 
         <div className="mb-8 rounded-2xl border border-[#eee4df] bg-white p-3 sm:p-4">
           <SearchBar
+              initialQuery={query}
+              initialCategory={filter}
+              initialSort={sort}
+              categoryPlaceholder="Categories"
+              customDropdownIcons
             onQueryChange={handleQueryChange}
             onFilterChange={handleFilterChange}
             onSortChange={handleSortChange}
@@ -234,9 +214,10 @@ export default function Categories() {
           </div>
           <a
             href="#products"
-            className="inline-flex w-fit items-center justify-center rounded-full bg-[var(--color-button)] px-6 py-3 text-sm font-medium text-white transition-colors "
+            className="inline-flex w-fit items-center justify-center gap-2 rounded-full bg-[var(--color-button)] px-6 py-3 text-sm font-medium text-white transition-colors"
           >
-            Shop Now  →
+            <span className="text-white">Shop Now</span>
+            <ArrowRight size={16} aria-hidden="true" />
           </a>
         </div>
       </section> 

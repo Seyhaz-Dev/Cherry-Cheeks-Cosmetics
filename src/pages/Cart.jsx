@@ -127,7 +127,7 @@ export default function Cart() {
 
               <Link
                 to="/checkout"
-                className="block w-full rounded-full bg-pink-600 px-5 py-3 text-center text-white transition hover:bg-pink-700"
+                className="block w-full rounded-full bg-pink-600 px-5 py-3 text-center !text-white transition hover:bg-pink-700"
               >
                 Proceed to Checkout →
               </Link>

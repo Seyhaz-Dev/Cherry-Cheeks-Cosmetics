@@ -3,9 +3,10 @@ import { Parallax, ParallaxImage, Reveal } from "../components/Parallax";
 
 import about1 from "../assets/about1.png";
 import about2 from "../assets/about2.png";
-import about3 from "../assets/kimijo.png";
-import about4 from "../assets/about4.png";
-import about5 from "../assets/about5.png";
+import jisooImage from "../assets/Jisso.png";
+import jennieImage from "../assets/jennie.png";
+import roseImage from "../assets/Rose.png";
+import younjongImage from "../assets/younjong.png";
 
 const values = [
   {
@@ -33,9 +34,10 @@ const values = [
 
 // Edit the names, roles, and images here
 const team = [
-  { name: "Kim MinJoo", role: "Founder & Creative Director", image: about3 },
-  { name: "Young BunHaz", role: "Formulation Lead", image: about4 },
-  { name: "MinJooMol", role: "Brand & Ritual Director", image: about5 },
+  { name: "Kim MinJoo", role: "Founder & Creative Director", image: jisooImage },
+  { name: "Young BunHaz", role: "Formulation Lead", image: jennieImage },
+  { name: "MinJooMol", role: "Brand & Ritual Director", image: roseImage },
+  { name: "Team Member", role: "Beauty & Skincare", image: younjongImage },
 ];
 
 function Eyebrow({ children, center = false }) {
@@ -79,7 +81,7 @@ export default function About() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               to="/shop"
-              className="rounded-full bg-[#e94f7d] px-7 py-3 text-sm font-medium text-white shadow-lg shadow-[#e94f7d]/25 transition hover:bg-[#d93d6c]"
+              className="rounded-full bg-[#e94f7d] px-7 py-3 text-sm font-medium !text-white shadow-lg shadow-[#e94f7d]/25 transition hover:bg-[#d93d6c]"
             >
               Shop the collection ↗
             </Link>
@@ -196,7 +198,7 @@ export default function About() {
 
           <Link
             to="/categories"
-            className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#e94f7d] px-7 py-3 text-sm font-medium text-white shadow-lg shadow-[#e94f7d]/25 transition hover:bg-[#d93d6c]"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#e94f7d] px-7 py-3 text-sm font-medium !text-white shadow-lg shadow-[#e94f7d]/25 transition hover:bg-[#d93d6c]"
           >
             Explore our formulas
             <span aria-hidden="true">→</span>
@@ -257,27 +259,23 @@ export default function About() {
           </p>
         </Reveal>
 
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 ">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {team.map((person, index) => (
-            <Reveal
-              key={person.name}
-              delay={index * 120}
-              className={index === 1 ? "lg:mt-12" : ""}
-            >
-              <article className="group relative overflow-hidden rounded-3xl bg-[#f3e9e4] object-cover transition duration-300 hover:-translate-y-1.5 hover:shadow-xl">
+            <Reveal key={person.name} delay={index * 120}>
+              <article className="group overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-[#eadfe2] transition duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <ParallaxImage
                   src={person.image}
                   alt={person.name}
-                  scale={1.25}
-                  className="aspect-[4/5] w-full"
-                  imgClassName="object-top"
+                  scale={1.08}
+                  className="aspect-[4/5] w-full bg-[#f3e9e4]"
+                  imgClassName="object-cover object-center"
                 />
 
-                <div className="absolute inset-x-3 bottom-3 rounded-2xl bg-white/90 px-5 py-4 backdrop-blur transition duration-300 group-hover:-translate-y-1">
+                <div className="px-5 py-4">
                   <h3 className="text-base font-semibold text-[#4A001F]">
                     {person.name}
                   </h3>
-                  <p className="mt-0.5 text-sm text-[#a18491]">
+                  <p className="mt-1 text-sm text-[#a18491]">
                     {person.role}
                   </p>
                 </div>
@@ -308,7 +306,7 @@ export default function About() {
             </p>
             <Link
               to="/shop"
-              className="relative mt-7 inline-flex rounded-full bg-[#e94f7d] px-8 py-3 text-sm font-medium text-white transition hover:bg-[#d93d6c]"
+              className="relative mt-7 inline-flex rounded-full bg-[#e94f7d] px-8 py-3 text-sm font-medium !text-white transition hover:bg-[#d93d6c]"
             >
               Shop Now →
             </Link>

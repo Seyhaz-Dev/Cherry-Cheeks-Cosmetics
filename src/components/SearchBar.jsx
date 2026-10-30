@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { ChevronDown } from 'lucide-react'
 
 const DEFAULT_SORT = 'Sort: Featured'
 
@@ -13,7 +14,16 @@ const SORT_OPTIONS = [
   'Newest',
 ]
 
-function SearchBar({ onQueryChange, onFilterChange, onSortChange, initialQuery = '', initialCategory = '', initialSort = DEFAULT_SORT }) {
+function SearchBar({
+  onQueryChange,
+  onFilterChange,
+  onSortChange,
+  initialQuery = '',
+  initialCategory = '',
+  initialSort = DEFAULT_SORT,
+  categoryPlaceholder = 'All Product',
+  customDropdownIcons = false,
+}) {
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams] = useSearchParams()
@@ -110,7 +120,16 @@ function SearchBar({ onQueryChange, onFilterChange, onSortChange, initialQuery =
 
   // 4. What appears on screen
   const selectStyle =
-    'h-11 w-full rounded-full border border-[#E9E6EA] bg-white px-4 text-sm font-medium text-gray-600 outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-100 sm:w-48'
+    `h-11 w-full rounded-full border border-[#E9E6EA] bg-white px-4 text-sm font-medium text-gray-600 outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-100 sm:w-48 ${customDropdownIcons ? 'appearance-none pr-10' : ''}`
+
+  function renderDropdownIcon() {
+    return customDropdownIcons ? (
+      <ChevronDown
+        aria-hidden="true"
+        className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-gray-600"
+      />
+    ) : null
+  }
 
   return (
     <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
@@ -137,33 +156,39 @@ function SearchBar({ onQueryChange, onFilterChange, onSortChange, initialQuery =
       </form>
 
       {/* Category dropdown */}
-      <select
-        value={category}
-        onChange={handleCategoryChange}
-        aria-label="Filter products"
-        className={selectStyle}
-      >
-        <option value="">All Product</option>
-        {categories.map((name) => (
-          <option key={name} value={name}>
-            {name}
-          </option>
-        ))}
-      </select>
+      <div className="relative w-full sm:w-48">
+        <select
+          value={category}
+          onChange={handleCategoryChange}
+          aria-label="Filter products"
+          className={selectStyle}
+        >
+          <option value="">{categoryPlaceholder}</option>
+          {categories.map((name) => (
+            <option key={name} value={name}>
+              {name}
+            </option>
+          ))}
+        </select>
+        {renderDropdownIcon()}
+      </div>
 
       {/* Sort dropdown */}
-      <select
-        value={sort}
-        onChange={handleSortChange}
-        aria-label="Sort by"
-        className={selectStyle}
-      >
-        {SORT_OPTIONS.map((name) => (
-          <option key={name} value={name}>
-            {name}
-          </option>
-        ))}
-      </select>
+      <div className="relative w-full sm:w-48">
+        <select
+          value={sort}
+          onChange={handleSortChange}
+          aria-label="Sort by"
+          className={selectStyle}
+        >
+          {SORT_OPTIONS.map((name) => (
+            <option key={name} value={name}>
+              {name}
+            </option>
+          ))}
+        </select>
+        {renderDropdownIcon()}
+      </div>
     </div>
   )
 }

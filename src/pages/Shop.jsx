@@ -132,6 +132,7 @@ function Shop() {
             initialQuery={query}
             initialCategory={filter}
             initialSort={sort}
+            customDropdownIcons
           />
         </div>
 

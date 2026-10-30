@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useOrders } from '../../context/OrderContext'
-import { CheckCircle2, Clock, Database, MoreHorizontal, Package, Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { CheckCircle2, ChevronLeft, ChevronRight, Clock, Database, MoreHorizontal, Package, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 
 // Map order status to color pill styling
 const STATUS = {
@@ -14,6 +14,7 @@ const EMPTY_FORM = { customer: '', items: '1 Item', total: '', payment: 'Paid', 
 
 // Standardized input style matching ProductManagement
 const inputClass = 'mt-1 w-full rounded-md border border-[#e6d3dc] px-3 py-2 text-sm outline-none focus:border-[#e0568a]'
+const ordersPerPage = 5
 
 // Reusable Stat Card matching ProductManagement design
 function StatCard({ label, value, icon: Icon, color }) {
@@ -37,6 +38,7 @@ export default function OrderManagement() {
   // Search & Filter state
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [currentPage, setCurrentPage] = useState(1)
 
   // Modals & Action target states
   const [orderToDelete, setOrderToDelete] = useState(null)
@@ -60,6 +62,13 @@ export default function OrderManagement() {
     const matchesStatus = statusFilter === 'all' || o.status === statusFilter
     return matchesSearch && matchesStatus
   })
+
+  const totalPages = Math.max(1, Math.ceil(visibleOrders.length / ordersPerPage))
+  const page = Math.min(currentPage, totalPages)
+  const startIndex = (page - 1) * ordersPerPage
+  const pageOrders = visibleOrders.slice(startIndex, startIndex + ordersPerPage)
+  const firstShown = visibleOrders.length === 0 ? 0 : startIndex + 1
+  const lastShown = startIndex + pageOrders.length
 
   // Handlers for Form & Actions
   const handleChange = (e) => {
@@ -160,14 +169,14 @@ export default function OrderManagement() {
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#82757b]" />
             <input
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => { setSearch(e.target.value); setCurrentPage(1) }}
               placeholder="Search by ID or customer..."
               className="w-full rounded-full border border-[#e6d3dc] py-2 pl-9 pr-3 text-sm outline-none focus:border-[#e0568a]"
             />
           </div>
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1) }}
             className="rounded-full border border-[#e6d3dc] bg-white px-3 py-2 text-sm outline-none focus:border-[#e0568a]"
           >
             <option value="all">All statuses</option>
@@ -191,7 +200,7 @@ export default function OrderManagement() {
               </tr>
             </thead>
             <tbody>
-              {visibleOrders.map((o) => {
+              {pageOrders.map((o) => {
                 const statusBadge = STATUS[o.status] || { label: o.status, className: 'bg-gray-100 text-gray-700' }
 
                 return (
@@ -232,6 +241,48 @@ export default function OrderManagement() {
           {visibleOrders.length === 0 && (
             <p className="py-10 text-center text-sm text-[#82757b]">No orders found.</p>
           )}
+        </div>
+
+        <div className="mt-4 flex flex-col items-center justify-between gap-3 text-xs text-[#82757b] sm:flex-row">
+          <p>Showing {firstShown}–{lastShown} of {visibleOrders.length}</p>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setCurrentPage(page - 1)}
+              disabled={page === 1}
+              aria-label="Previous page"
+              className="flex size-8 items-center justify-center rounded-md border border-[#e6d3dc] hover:bg-[#f8edf2] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <ChevronLeft size={14} />
+            </button>
+
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map((number) => (
+              <button
+                key={number}
+                type="button"
+                onClick={() => setCurrentPage(number)}
+                aria-current={number === page ? 'page' : undefined}
+                className={`flex size-8 items-center justify-center rounded-md border text-sm ${
+                  number === page
+                    ? 'border-[#e0568a] bg-[#e0568a] text-white'
+                    : 'border-[#e6d3dc] text-[#30252a] hover:bg-[#f8edf2]'
+                }`}
+              >
+                {number}
+              </button>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => setCurrentPage(page + 1)}
+              disabled={page === totalPages}
+              aria-label="Next page"
+              className="flex size-8 items-center justify-center rounded-md border border-[#e6d3dc] hover:bg-[#f8edf2] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
         </div>
       </section>
 

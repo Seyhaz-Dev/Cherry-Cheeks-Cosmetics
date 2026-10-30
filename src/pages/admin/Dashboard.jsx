@@ -1,33 +1,29 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
+  ArrowUpRight,
   ShoppingCart,
   Package,
-  TrendingUp,
+  DollarSign,
   Users,
-  ArrowUpRight,
-  ArrowDownRight,
   Eye,
 } from "lucide-react";
-
-import {
-  products,
-  customers,
-  orders,
-  salesData,
-} from "../../data/dashboardData.js";
+import { useCustomers } from "../../context/CustomerContext";
+import { useOrders } from "../../context/OrderContext";
 
 const money = (amount) =>
   new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(Number(amount) || 0);
+
+const getOrderTotal = (order) => Number(order.total ?? order.amount ?? 0);
 
 function StatCard({ item }) {
   const Icon = item.icon;
-  const ChangeIcon = item.positive ? ArrowUpRight : ArrowDownRight;
 
   return (
     <div className="rounded-xl bg-white p-4 sm:p-5">
@@ -44,111 +40,53 @@ function StatCard({ item }) {
       <p className="mt-3 text-2xl font-semibold text-[#35242c]">
         {item.value}
       </p>
-
-      <p className="mt-2 flex items-center gap-1 text-xs">
-        <span
-          className={`flex items-center font-medium ${
-            item.positive ? "text-green-600" : "text-red-500"
-          }`}
-        >
-          <ChangeIcon size={14} />
-          {item.change}
-        </span>
-
-        <span className="text-[#82757b]">vs last month</span>
-      </p>
     </div>
   );
 }
 
-function SalesChart() {
-  const [period, setPeriod] = useState("week");
-  const currentSales = salesData[period];
-
-  const maxRevenue = Math.max(
-    ...currentSales.map((item) => item.revenue),
-    1
-  );
-
-  const axisMax = Math.ceil(maxRevenue / 4 / 100) * 100 || 100;
-  const chartMax = axisMax * 4;
+function OrderStatusSummary({ orders }) {
+  const statuses = [
+    { name: "Pending", color: "bg-[#e6a51a]" },
+    { name: "Processing", color: "bg-[#3975d5]" },
+    { name: "Completed", color: "bg-[#1f9d55]" },
+  ];
 
   return (
     <section className="rounded-xl bg-white p-4 sm:p-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-base font-semibold text-[#35242c]">
-            Sales Overview
-          </h2>
-
-          <p className="mt-1 text-sm text-[#82757b]">
-            Your revenue performance
-          </p>
+          <h2 className="text-base font-semibold text-[#35242c]">Order Status</h2>
+          <p className="mt-1 text-sm text-[#82757b]">Current order progress</p>
         </div>
-
-        <select
-          value={period}
-          onChange={(event) => setPeriod(event.target.value)}
-          className="rounded-md border border-[#e6d3dc] bg-white px-3 py-2 text-sm outline-none focus:border-[#e0568a]"
-        >
-          <option value="week">This week</option>
-          <option value="month">This month</option>
-          <option value="year">This year</option>
-        </select>
+        <span className="text-sm text-[#82757b]">{orders.length} total</span>
       </div>
 
-      <div className="mt-6 flex h-52 gap-3 sm:h-60">
-        <div className="flex flex-col justify-between pb-7 text-xs text-[#82757b]">
-          {[4, 3, 2, 1, 0].map((number) => (
-            <span key={number}>{money(axisMax * number)}</span>
-          ))}
-        </div>
+      <div className="mt-5 grid gap-5 sm:grid-cols-3">
+        {statuses.map((status) => {
+          const count = orders.filter((order) => order.status === status.name).length;
+          const percentage = orders.length ? (count / orders.length) * 100 : 0;
 
-        <div className="relative flex flex-1 flex-col">
-          <div className="absolute inset-0 bottom-7 flex flex-col justify-between">
-            {[1, 2, 3, 4, 5].map((line) => (
-              <div
-                key={line}
-                className="w-full border-t border-dashed border-[#f0e3e9]"
-              />
-            ))}
-          </div>
-
-          <div className="relative flex flex-1 items-end justify-around gap-2 pb-7">
-            {currentSales.map((item) => (
-              <div
-                key={item.day}
-                className="flex h-full min-w-0 flex-1 flex-col items-center justify-end"
-              >
+          return (
+            <div key={status.name}>
+              <div className="mb-2 flex items-center justify-between text-sm">
+                <span className="text-[#5f5359]">{status.name}</span>
+                <span className="font-semibold text-[#35242c]">{count}</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-[#f3edf0]">
                 <div
-                  title={`${item.day}: ${money(item.revenue)}`}
-                  className="w-full max-w-10 rounded-t-md bg-[#e0568a] transition-all duration-300 hover:bg-[#cc4a7b]"
-                  style={{
-                    height: `${(item.revenue / chartMax) * 100}%`,
-                    minHeight: item.revenue > 0 ? "4px" : "0",
-                  }}
+                  className={`h-full rounded-full ${status.color}`}
+                  style={{ width: `${percentage}%` }}
                 />
               </div>
-            ))}
-          </div>
-
-          <div className="absolute inset-x-0 bottom-0 flex justify-around">
-            {currentSales.map((item) => (
-              <span
-                key={item.day}
-                className="flex-1 truncate text-center text-xs text-[#82757b]"
-              >
-                {item.day}
-              </span>
-            ))}
-          </div>
-        </div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
 }
 
-function RecentOrders() {
+function RecentOrders({ orders }) {
   const getStatusStyle = (status) => {
     if (status === "Completed") {
       return "bg-[#b9f3c9] text-[#1f6b3a]";
@@ -174,15 +112,12 @@ function RecentOrders() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => {
-            window.location.href = "/admin/orders";
-          }}
+        <Link
+          to="/admin/orders"
           className="flex items-center gap-1 text-sm font-medium text-[#e0568a] hover:text-[#cc4a7b]"
         >
           View all <Eye size={15} />
-        </button>
+        </Link>
       </div>
 
       <div className="mt-4 overflow-x-auto">
@@ -190,14 +125,19 @@ function RecentOrders() {
           <thead className="text-[#5f5359]">
             <tr>
               <th className="py-3 pr-4 font-medium">Order ID</th>
-              <th className="px-4 py-3 font-medium">Customer</th>
+              <th className="px-4 py-3 font-medium">Customer / Items</th>
               <th className="px-4 py-3 font-medium">Amount</th>
               <th className="px-4 py-3 font-medium">Status</th>
             </tr>
           </thead>
 
           <tbody>
-            {orders.slice(0, 5).map((order) => (
+            {orders.slice(0, 5).map((order) => {
+              const itemSummary = Array.isArray(order.lineItems) && order.lineItems.length > 0
+                ? order.lineItems.map((item) => `${item.name}${item.quantity > 1 ? ` x${item.quantity}` : ""}`).join(", ")
+                : order.items || "No items listed";
+
+              return (
               <tr
                 key={order.id}
                 className="border-t border-[#f0e3e9] hover:bg-[#fff9fc]"
@@ -212,12 +152,12 @@ function RecentOrders() {
                   </p>
 
                   <p className="mt-1 text-xs text-[#82757b]">
-                    {order.product}
+                    {itemSummary}
                   </p>
                 </td>
 
                 <td className="whitespace-nowrap px-4 py-4 font-medium">
-                  {money(order.amount)}
+                  {money(getOrderTotal(order))}
                 </td>
 
                 <td className="px-4 py-4">
@@ -230,7 +170,15 @@ function RecentOrders() {
                   </span>
                 </td>
               </tr>
-            ))}
+              );
+            })}
+            {orders.length === 0 && (
+              <tr>
+                <td colSpan="4" className="py-8 text-center text-sm text-[#82757b]">
+                  No orders yet.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -239,41 +187,65 @@ function RecentOrders() {
 }
 
 export default function Dashboard() {
-  const totalRevenue = orders.reduce(
-    (total, order) => total + order.amount,
-    0
-  );
+  const { orders } = useOrders();
+  const { customers } = useCustomers();
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadProducts() {
+      try {
+        const savedProducts = localStorage.getItem("cherry-cheeks-products");
+
+        if (savedProducts) {
+          const parsedProducts = JSON.parse(savedProducts);
+          if (Array.isArray(parsedProducts)) {
+            if (active) setProducts(parsedProducts);
+            return;
+          }
+        }
+
+        const response = await fetch("/student-data/products.json");
+        if (!response.ok) throw new Error("Failed to load products");
+
+        const loadedProducts = await response.json();
+        if (active && Array.isArray(loadedProducts)) setProducts(loadedProducts);
+      } catch (error) {
+        console.error("Unable to load dashboard products:", error);
+      }
+    }
+
+    loadProducts();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const totalRevenue = orders.reduce((total, order) => total + getOrderTotal(order), 0);
 
   const stats = [
     {
       label: "Total Revenue",
       value: money(totalRevenue),
-      change: "+12.8%",
-      positive: true,
-      icon: TrendingUp,
+      icon: DollarSign,
       color: "bg-[#fde0ec] text-[#e0568a]",
     },
     {
       label: "Total Orders",
       value: orders.length.toLocaleString(),
-      change: "+8.2%",
-      positive: true,
       icon: ShoppingCart,
       color: "bg-[#dceafe] text-[#3975d5]",
     },
     {
       label: "Total Products",
       value: products.length.toLocaleString(),
-      change: "+4.5%",
-      positive: true,
       icon: Package,
       color: "bg-[#c9f5d8] text-[#1f9d55]",
     },
     {
       label: "Total Customers",
       value: customers.length.toLocaleString(),
-      change: "-2.1%",
-      positive: false,
       icon: Users,
       color: "bg-[#fdebc0] text-[#d98a00]",
     },
@@ -281,15 +253,16 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-4 sm:space-y-5">
+    
       <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         {stats.map((item) => (
           <StatCard key={item.label} item={item} />
         ))}
       </div>
 
-      <SalesChart />
+      <OrderStatusSummary orders={orders} />
 
-      <RecentOrders />
+      <RecentOrders orders={orders} />
     </div>
   );
 }
