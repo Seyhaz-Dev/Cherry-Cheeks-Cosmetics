@@ -46,7 +46,6 @@ export default function Checkout() {
 
   const subtotalAmount =
     typeof subtotal === "number" ? subtotal : calculatedSubtotal;
-
   const shipping = subtotalAmount > 0 ? 2 : 0;
   const total = subtotalAmount + shipping;
 
@@ -146,15 +145,10 @@ export default function Checkout() {
     <main className="min-h-screen bg-gray-50 px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         {/* Header */}
-        <div className="mb-10">
-          <Link
-            to="/"
-            className="text-2xl font-bold tracking-tight text-pink-600"
-          >
-            Cherry Cheeks
-          </Link>
+        <div>
+          
 
-          <div className="mt-6 flex items-center gap-3 text-sm text-gray-500">
+          <div className=" flex items-center gap-3 text-sm text-gray-500">
             <Link
               to="/cart"
               className="transition hover:text-pink-600"
