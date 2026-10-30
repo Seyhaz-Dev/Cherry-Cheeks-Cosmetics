@@ -3,19 +3,21 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useCustomers } from '../context/CustomerContext'
 import { useOrders } from '../context/OrderContext'
+import abaLogo from '../assets/aba.png'
+import cashOnDeliveryLogo from '../assets/cash-on-delivery.svg'
 
 const PAYMENT_METHODS = [
   {
     id: 'aba',
     name: 'ABA Pay',
     description: 'Pay using ABA Mobile.',
-    logo: '',
+    logo: abaLogo,
   },
   {
     id: 'cash',
     name: 'Cash on Delivery',
     description: 'Pay when your order arrives.',
-    logo: '',
+    logo: cashOnDeliveryLogo,
   },
 ]
 
@@ -378,7 +380,7 @@ export default function Checkout() {
                         className="h-4 w-4 shrink-0 accent-pink-600"
                       />
 
-                      <div className="flex h-12 w-20 shrink-0 items-center justify-center">
+                      <div className="flex h-12 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white">
                         {method.logo && !logoErrors[method.id] ? (
                           <img
                             src={method.logo}
