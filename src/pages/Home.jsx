@@ -70,7 +70,7 @@ const reviews = [
   },
 ];
 
-function SectionHead({ title, sub, link = "View All" }) {
+function SectionHead({ title, sub, link = "View All", to = "/categories" }) {
   return (
     <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
       <div>
@@ -84,7 +84,7 @@ function SectionHead({ title, sub, link = "View All" }) {
       </div>
 
       <a
-        href="/categories"
+        href={to}
         className="shrink-0 text-sm font-medium text-[#e94f7d] transition hover:underline"
       >
         {link} →
@@ -303,6 +303,7 @@ export default function Home() {
           title="Featured Products"
           sub="Discover your next beauty essential."
           link="Shop All"
+          to="/shop"
         />
          
 
@@ -320,31 +321,20 @@ export default function Home() {
           </p>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-            {formattedProducts.slice(0, 8).map((product) => (
+            {formattedProducts.slice(0, 4).map((product) => (
               <div
                 key={product.id}
                 className="min-w-0 rounded-xl transition duration-300 hover:-translate-y-1 sm:rounded-2xl"
               >
                 <ProductCard {...product} />
 
-                <p className="mt-2 px-1 text-xs text-[#817874] sm:text-sm">
-                  {product.stockQuantity > 0
-                    ? `${product.stockQuantity} in stock`
-                    : "Out of stock"}
-                </p>
+               
               </div>
             ))}
           </div>
         )}
 
-        <div className="mt-9 text-center sm:mt-12">
-          <a  
-            href="/shop"
-            className="inline-flex items-center justify-center rounded-full bg-[#e94f7d] px-7 py-3 text-sm font-medium text-white transition hover:bg-[#d93d6c]"
-          >
-            Explore All Products →
-          </a>
-        </div>
+      
       </section>
 
       {/* WHY CHERRY CHEEKS */}
