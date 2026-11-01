@@ -153,14 +153,7 @@ export default function OrderManagement() {
             <h2 className="text-lg font-semibold text-slate-900">Orders</h2>
             <p className="text-sm text-[#82757b]">Total {orders.length} orders</p>
           </div>
-          <button
-            type="button"
-            onClick={openAddForm}
-            className="flex items-center gap-1.5 rounded-full bg-[#e0568a] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#cc4a7b] transition-colors"
-          >
-            <Plus size={16} />
-            New Order
-          </button>
+          
         </div>
 
         {/* Toolbar: Search input & Status Dropdown */}
