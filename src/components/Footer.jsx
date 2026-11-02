@@ -97,12 +97,7 @@ function Footer() {
                 </Link>
               </li>
 
-              <li>
-                <Link to="/categories" className="transition hover:text-white">
-                  Categories
-                </Link>
-              </li>
-
+           
               <li>
                 <Link to="/about" className="transition hover:text-white">
                   About
