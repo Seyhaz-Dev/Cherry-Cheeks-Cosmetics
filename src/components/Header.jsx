@@ -22,7 +22,6 @@ import {
 const mobileLinks = [
   { to: "/", label: "Home", icon: faHouse, end: true },
   { to: "/shop", label: "Shop", icon: faShop },
-  { to: "/categories", label: "Categories", icon: faLayerGroup },
   { to: "/about", label: "About", icon: faCircleInfo },
   { to: "/contact", label: "Contact", icon: faEnvelope },
 ];
@@ -56,9 +55,7 @@ function Header() {
             <Link to="/shop" className="text-gray-600 transition hover:text-pink-600">
               Shop
             </Link>
-            <Link to="/categories" className="text-gray-600 transition hover:text-pink-600">
-              Categories
-            </Link>
+         
             <Link to="/about" className="text-gray-600 transition hover:text-pink-600">
               About
             </Link>
