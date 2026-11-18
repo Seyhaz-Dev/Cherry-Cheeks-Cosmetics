@@ -18,6 +18,7 @@ import perfumeImage from "../assets/Dewy.png";
 import bodyLotionImage from "../assets/cream-balm.png";
 import handCreamImage from "../assets/peony-toner.png";
 
+
 const productImages = {
   101: cleanserImage,
   102: serumImage,
